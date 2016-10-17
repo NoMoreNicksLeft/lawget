@@ -454,9 +454,17 @@ sub convert_pdfs_to_svg {
     my @pdfs = grep(/\.pdf$/,readdir(DIR));
     closedir(DIR);
 
+    print "Converting (Title x) PDFs to SVG ...\n";
+    my $progress = Term::ProgressBar->new({count => scalar(@pdfs), ETA => 'linear', remove => 1});
+    $progress->minor(0);
+    $progress->max_update_rate(1);
+
+    my $a = 1;
     foreach my $pdf (@pdfs) {
         my $svg = $pdf; $svg =~ s/\.pdf$/.svg/; 
-        shell($inkscape . "--without-gui --file=$path/$pdf --export-plain-svg=$path/$svg");
+        system($inkscape . " --without-gui --file=$path/$pdf --export-plain-svg=$path/$svg &>/dev/null");
+        $progress->update($a);
+        $a++;
     }
 }
 
