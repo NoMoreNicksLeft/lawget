@@ -163,6 +163,7 @@ sub compile {
             # Run it through our grimy little parser and add it to our file.
             my $file_contents = parse_tac_html_file("$build_root/$title_number/$file", %last_headers);
             # Write it out to the work-in-progress file.
+            print $fh "      <!-- $file -->\n";
             print $fh $file_contents;
             # Don't forget our progress bar.
             $progress->update($a);
