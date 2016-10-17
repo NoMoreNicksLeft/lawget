@@ -42,6 +42,7 @@ my %size_estimate = ( 1  => 3875,
                       40 => 4000,
                       43 => 4000,
                     );
+my $inkscape="/Applications/Inkscape.app/Contents/Resources/bin/inkscape";
 
 ################################################################################
 ############################### Public functions ###############################
