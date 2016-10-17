@@ -325,6 +325,23 @@ sub parse_tac_html_file {
     return $parsed_markup;
 }
 
+sub convert_pdfs_to_svg {
+    my ($path) = @_;
+
+    opendir(DIR, $path);
+    my @pdfs = grep(/\.pdf$/,readdir(DIR));
+    closedir(DIR);
+
+    foreach $pdf (@pdfs) {
+        my $svg = $pdf; $svg =~ s/\.pdf$/.svg/; 
+        shell($inkscape . "--without-gui --file=$path/$pdf --export-plain-svg=$path/$svg");
+    }
+}
+
+sub add_script_to_svgs {
+
+}
+
 ################################################################################
 ################################################################################
 ################################################################################
