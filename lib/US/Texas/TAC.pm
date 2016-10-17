@@ -340,6 +340,113 @@ sub parse_tac_html_file {
     return $parsed_markup;
 }
 
+sub reconstruct_rule_file {
+    my ($filepath) = @_;
+
+    my $file_contents = read_file($filepath);
+
+    # Make the contents (for now) just the portion that contains the headers data.
+    $file_contents =~ s/^.+(NAME="TITLE".+?<\/TABLE>).+$/$1/s;
+
+    # If this rule is in a single file, no worries. But if there are cont'd
+    # files, we have to roll through 001aa and 001ab, squash the contents
+    # together, *then* parse those. Otherwise none but the last has a
+    # source note, the regexes fail, warnings blow up all over the place.
+    my ($path, $file_no_suffix) = $filepath =~ /^(.+)(\d{6})([a-z]{2})?.html/;
+
+    # Get the true list of files.
+    opendir(DIR, "$path");
+    my @cont_files = grep(/$file_no_suffix([a-z]{2})?.html$/,readdir(DIR));
+    closedir(DIR);
+
+    $file_contents .= "<TABLE >\n<TR>\n<TD><HR></TD>\n</TR>\n<TR>\n<TD>";
+    my $sn_markup;
+    foreach my $partial (@cont_files) {
+        # Better than undef $/, we'll just use File::Slurp.
+        my $partial_contents = read_file("$path$partial");
+        # Only a source note if the terminal nth of sequence.
+        $sn_markup = $1 if $partial_contents =~ m/<TD>(<B>Source Note:.+?)<.TD>/s;
+        # Next, let's snip out the actual content.
+        $partial_contents =~ s/^.+<TABLE\s*>\n<TR>\n<TD><HR><.TD>\n<.TR>\n<TR>\n<TD>\s*(<..>.+?)<\/TD>.+$/$1/s;
+        $file_contents .= $partial_contents;
+    }
+    $file_contents .= "</TD><TD>$sn_markup</TD>";
+    $file_contents =~ s/<A HREF=".+?" NAME="Continued">.+?<\/A>//g;
+
+    # This thing has mixed \r and \n line endings. Not \r\n, but mixed 
+    # (one or the other). Thanks Brian Watson, took him 3 minutes to
+    # figure it out. We'll strip those now and save everyone grief.
+    $file_contents =~ s/(\r|\n)/ /g;
+
+    return $file_contents;
+}
+
+sub construct_h_tags {
+    my ($file_contents, $last_headers) = @_;
+
+    # Let's get all the header tag content, and build that portion of the html
+    # to return.
+    my ($title_a, $title_b, $rule_a, $rule_b) = 
+            $file_contents =~ m/NAME="TITLE">(.+?)<.A><.TD><TD>(.+?)<.font>.+?<TD WIDTH=\d+>(.+?)<.TD><TD>(.+?)<.TD>/s;
+    my ($part_a, $part_b) = 
+            $file_contents =~ m/NAME="PART">(.+?)<.A><.TD><TD>(.+?)<.TD>/s;
+    my ($chapter_a, $chapter_b) = 
+            $file_contents =~ m/NAME="CHAPTER">(.+?)<.A><.TD><TD>(.+?)<.TD>/s;
+    my ($subchapter_a, $subchapter_b) = 
+            $file_contents =~ m/NAME="SUBCHAPTER">(.+?)<.A><.TD><TD>(.+?)<.TD>/s;
+    my ($division_a, $division_b) = 
+            $file_contents =~ m/NAME="DIVISION">(.+?)<.A><.TD><TD>(.+?)<.TD>/s;
+
+    my $headers;
+    # Now we'll compare what we got against %last_headers to see what we need
+    # to add to this iteration's headers.
+    if ($division_a && $last_headers->{'division_a'} ne $division_a) {
+        $last_headers->{'division_a'} = $division_a;
+        if ($subchapter_a && $last_headers->{'subchapter_a'} ne $subchapter_a) {
+            $last_headers->{'subchapter_a'} = $subchapter_a;
+            print "$rule_a\n\n"; die;
+            if ($last_headers->{'chapter_a'} ne $chapter_a) {
+                $last_headers->{'chapter_a'} = $chapter_a;
+                if ($last_headers->{'part_a'} ne $part_a) {
+                    $last_headers->{'part_a'} = $part_a;
+                    if ($last_headers->{'title_a'} ne $title_a) {
+                        $last_headers->{'title_a'} = $title_a;
+                        my $h1 = Lingua::EN::Titlecase->new("$title_a - $title_b");
+                        $headers .= "      <h1>" . $h1 . "</h1>\n";
+                    }
+                    my $h2 = Lingua::EN::Titlecase->new("$part_a - $part_b");
+                    $headers .= "      <h2>" . $h2 . "</h2>\n";
+                }
+                my $h3 = Lingua::EN::Titlecase->new("$chapter_a - $chapter_b");
+                $headers .= "      <h3>" . $h3 . "</h3>\n";
+            }
+            my $h4 = Lingua::EN::Titlecase->new("$subchapter_a - $subchapter_b");
+            $headers .= "      <h4>" . $h4 . "</h4>\n";
+        }
+        my $h5 = Lingua::EN::Titlecase->new("$division_a - $division_b");
+        $headers .= "      <h5>" . $h5 . "</h5>\n";
+    }
+    # Rule should change every time, regardless, no need to check. Also,
+    # let's go ahead and put a space in the section symbol.
+    my $h6 = Lingua::EN::Titlecase->new(original => "$rule_a - $rule_b", mixed_threshold => 0.5);
+    $headers .= "      <h6>" . $h6 . "</h6>\n";
+
+    return ($headers);
+}
+
+sub get_piece_numbers {
+    my ($file_contents) = @_;
+
+    my ($title_a, $rule_a) = 
+            $file_contents =~ m/NAME="TITLE">(.+?)<.A><.TD>.+?<TD WIDTH=\d+>(.+?)<.TD>/s;
+
+    # Need to have the title number and rule.
+    my ($title_number) = $title_a =~ /(\d+)/;
+    my ($rule_number) = $rule_a =~ /^.+?([0-9.]+)/;
+
+    return ($title_number, $rule_number);
+}
+
 sub convert_pdfs_to_svg {
     my ($path) = @_;
 
