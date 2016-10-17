@@ -166,7 +166,7 @@ sub compile {
         open(my $fh, '>>', $work_in_progress);
         foreach my $file (@source_files) {
             # Run it through our grimy little parser and add it to our file.
-            my $file_contents = parse_tac_html_file("$build_root/$title_number/$file", %last_headers);
+            my $file_contents = parse_tac_html_file("$build_root/$title_number/$file", \%last_headers);
             # Write it out to the work-in-progress file.
             print $fh "      <!-- $file -->\n";
             print $fh $file_contents;
@@ -222,7 +222,7 @@ sub get_title_urls {
 }
 
 sub parse_tac_html_file {
-    my ($filepath) = @_;
+    my ($filepath, $last_headers) = @_;
 
     # Better than undef $/, we'll just use File::Slurp.
     my $file_contents = read_file($filepath);
@@ -245,14 +245,14 @@ sub parse_tac_html_file {
     my $headers;
     # Now we'll compare what we got against %last_headers to see what we need
     # to add to this iteration's headers.
-    if ($last_headers{'subchapter_a'} ne $subchapter_a) {
-        $last_headers{'subchapter_a'} = $subchapter_a;
-        if ($last_headers{'chapter_a'} ne $chapter_a) {
-            $last_headers{'chapter_a'} = $chapter_a;
-            if ($last_headers{'part_a'} ne $part_a) {
-                $last_headers{'part_a'} = $part_a;
-                if ($last_headers{'title_a'} ne $title_a) {
-                    $last_headers{'title_a'} = $title_a;
+    if ($last_headers->{'subchapter_a'} ne $subchapter_a) {
+        $last_headers->{'subchapter_a'} = $subchapter_a;
+        if ($last_headers->{'chapter_a'} ne $chapter_a) {
+            $last_headers->{'chapter_a'} = $chapter_a;
+            if ($last_headers->{'part_a'} ne $part_a) {
+                $last_headers->{'part_a'} = $part_a;
+                if ($last_headers->{'title_a'} ne $title_a) {
+                    $last_headers->{'title_a'} = $title_a;
                     my $h1 = Lingua::EN::Titlecase->new("$title_a - $title_b");
                     $headers .= "      <h1>" . $h1 . "</h1>\n";
                 }
