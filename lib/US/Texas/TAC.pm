@@ -143,10 +143,14 @@ sub compile {
         closedir(DIR);
 
         # We also need to convert any pdfs to svg.
-
+        convert_pdfs_to_svg("$build_root/$title_number/includes");
         # We need to tack on some javascript to them
+        add_script_to_svgs("$build_root/$title_number/includes");
 
         # We need to add some to the htmls too.
+        opendir(DIR, "$build_root/$title_number/includes");
+        my @html_files = grep(/\.html$/,readdir(DIR));
+        closedir(DIR);
 
         # This will take awhile, let's provide some feedback.
         print "Compiling Title $title_number ...\n";
