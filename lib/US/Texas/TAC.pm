@@ -223,27 +223,45 @@ sub parse_tac_html_file {
 
     # Let's get all the header tag content, and build that portion of the html
     # to return.
-    titlea=`perl -ne 'print lc($1) if /NAME="TITLE">(.+?)<\/A><\/TD>/' $file`
-    titleb=`perl -ne 'print lc($1) if /NAME="TITLE">.+?<\/A><\/TD><TD>(.+?)<\/font><\/TD>/' $file`
-    parta=`perl -ne 'print lc($1) if /NAME="PART">(.+?)<\/A><\/TD>/' $file`
-    partb=`perl -ne 'print lc($1) if /NAME="PART">.+?<\/A><\/TD><TD>(.+?)<\/TD>/' $file`
-    chapa=`perl -ne 'print lc($1) if /NAME="CHAPTER">(.+?)<\/A><\/TD>/' $file`
-    chapb=`perl -ne 'print lc($1) if /NAME="CHAPTER">.+?<\/A><\/TD><TD>(.+?)<\/TD>/' $file`
-    suba=`perl -ne 'print lc($1) if /NAME="SUBCHAPTER">(.+?)<\/A><\/TD>/' $file`
-    subb=`perl -ne 'print lc($1) if /NAME="SUBCHAPTER">.+?<\/A><\/TD><TD>(.+?)<\/TD>/' $file`
-    rulea=`perl -ne 'print lc($1." ".$2) if /<TD WIDTH=\d+>(RULE &sect;)(.+?)<\/TD>/' $file`
-    ruleb=`perl -ne 'print $1 if /<TD WIDTH=\d+>.+?<\/TD><TD>(.+?)<\/TD>/' $file`
-    sn=`perl -e 'undef $/; $_=<>; print $1 if /<TD>(<B>Source Note:.+?)<\/TD>/s' $file`
-
-    Lingua::EN::Titlecase->new($x)
-
-    my () = 
-            $file_contents =~ /NAME="TITLE">(.+?)<.A><.TD><TD>(.+?)<.font>
-                               NAME="PART">(.+?)<.A><.TD><TD>(.+?)<.TD>
-                               NAME="CHAPTER">(.+?)<.A><.TD><TD>(.+?)<.TD>
-                               NAME="SUBCHAPTER">(.+?)<.A><.TD><TD>(.+?)<.TD>
+    my ($title_a, $title_b, $part_a, $part_b, $chapter_a, $chapter_b, 
+        $subchapter_a, $subchapter_b, $rule_a, $rule_b, $source_note) = 
+            # Multi-line regex seemed most reasonable here.
+            $file_contents =~ /NAME="TITLE">(.+?)<.A><.TD><TD>(.+?)<.font>.+?
+                               NAME="PART">(.+?)<.A><.TD><TD>(.+?)<.TD>.+?
+                               NAME="CHAPTER">(.+?)<.A><.TD><TD>(.+?)<.TD>.+?
+                               NAME="SUBCHAPTER">(.+?)<.A><.TD><TD>(.+?)<.TD>.+?
+                               <TD WIDTH=\d+>(RULE .+?)<.TD><TD>(.+?)<.TD>.+?
+                               <TD>(<B>Source Note:.+?)<.TD>
                               /sx;
 
+    my $headers;
+    # Now we'll compare what we got against %last_headers to see what we need
+    # to add to this iteration's headers.
+    if ($last_headers{'subchapter_a'} ne $subchapter_a) {
+        $last_headers{'subchapter_a'} = $subchapter_a;
+        if ($last_headers{'chapter_a'} ne $chapter_a) {
+            $last_headers{'chapter_a'} = $chapter_a;
+            if ($last_headers{'part_a'} ne $part_a) {
+                $last_headers{'part_a'} = $part_a;
+                if ($last_headers{'title_a'} ne $title_a) {
+                    $last_headers{'title_a'} = $title_a;
+                    my $h1 = Lingua::EN::Titlecase->new("$title_a - $title_b");
+                    $headers .= "      <h1>" . $h1 . "</h1>\n";
+                }
+                my $h2 = Lingua::EN::Titlecase->new("$part_a - $part_b");
+                $headers .= "      <h2>" . $h2 . "</h2>\n";
+            }
+            my $h3 = Lingua::EN::Titlecase->new("$chapter_a - $chapter_b");
+            $headers .= "      <h3>" . $h3 . "</h3>\n";
+        }
+        my $h4 = Lingua::EN::Titlecase->new("$subchapter_a - $subchapter_b");
+        $headers .= "      <h4>" . $h4 . "</h4>\n";
+    }
+    # Rule should change every time, regardless, no need to check. Also,
+    # let's go ahead and put a space in the section symbol.
+    $rule_a =~ s/\xa7/\xa7&nbsp;/;
+    my $h5 = Lingua::EN::Titlecase->new("$rule_a - $rule_b");
+    $headers .= "      <h5>" . $h5 . "</h5>\n";
 
     # Next, let's snip out the actual content.
     my ($parsed_markup) = $file_contents =~ /<TABLE\s*>\n<TR>\n<TD><HR><.TD>\n<.TR>\n<TR>\n<TD>(.+?)<\/TD>/s;
