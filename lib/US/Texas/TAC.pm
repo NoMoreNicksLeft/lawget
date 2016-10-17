@@ -312,7 +312,6 @@ sub parse_tac_html_file {
 
     # Fix some entities, create others.
     $parsed_markup =~ s/(\. ){3,4}/ &hellip;/g;
-    $parsed_markup =~ s/&sect;/&sect;&nbsp;/g;
     $parsed_markup =~ s/--/ &mdash; /g;
     $parsed_markup =~ s/<! &mdash; /<!--/g;
     $parsed_markup =~ s/ &mdash; >/-->/g;
@@ -335,6 +334,8 @@ sub parse_tac_html_file {
 
     # Or the headers...
     $parsed_markup = $headers . $parsed_markup;
+    # Let's do this on the final pass, so that we get source notes too.
+    $parsed_markup =~ s/&sect;/&sect;&nbsp;/g;
 
     return $parsed_markup;
 }
