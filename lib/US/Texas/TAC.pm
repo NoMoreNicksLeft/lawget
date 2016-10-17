@@ -119,6 +119,9 @@ sub download {
             }
         }
 
+        # The last file downloaded seems to be a dupe of the next to last.
+        unlink("$build_root/$title_number/" . sprintf("%06d", $a) . ".html");
+
         # Let's finish up the progress bar, since we've exited the loop.
         $progress->update($size_estimate{$title_number});
     }
