@@ -346,7 +346,7 @@ sub convert_pdfs_to_svg {
     my @pdfs = grep(/\.pdf$/,readdir(DIR));
     closedir(DIR);
 
-    foreach $pdf (@pdfs) {
+    foreach my $pdf (@pdfs) {
         my $svg = $pdf; $svg =~ s/\.pdf$/.svg/; 
         shell($inkscape . "--without-gui --file=$path/$pdf --export-plain-svg=$path/$svg");
     }
