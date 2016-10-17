@@ -288,15 +288,13 @@ sub parse_tac_html_file {
     # We need any pdf document to be an svg instead.
     if ($iframes) { $iframes =~ s/\.pdf"><\/iframe>/.svg"><\/iframe>/sg; }
     # Any wording of "attached graphic" needs to be "see figure".
-    # Need to have the title number and rule here.
-    my ($t) = $title_a =~ /(\d+)/;
-    my ($r) = $rule_a =~ /^.+?([0-9.]+)/;
-    $parsed_markup =~ s/<a href="(\/fids\/)(.+?)\.(html|pdf)">Attached Graphic<\/a>/<a href="#$2">See Figure $t TAC &sect;&nbsp;$r<\/a>/sg;
+    $parsed_markup =~ s/<a href="(\/fids\/)(.+?)\.(html|pdf)">Attached Graphic<\/a>/<a href="#$2">See Figure $title_number TAC &sect;&nbsp;$rule_number<\/a>/sg;
     # Wrap everything in a p tag, tack iframes on at end, then source note.
     $parsed_markup =~ s/^(.+)$/      <p class="rule">$1<\/p>$iframes/sg;
 
     # Don't forget the source note.
-    $parsed_markup .= "      <p class='sourcenote'>$source_note</p>\n";
+    my ($source_note) = $file_contents =~ m/<TD>(<B>Source Note:.+?)<.TD>/s;
+    $parsed_markup .= "\n      <p class='sourcenote'>$source_note</p>\n";
 
     # Or the headers...
     $parsed_markup = $headers . $parsed_markup;
