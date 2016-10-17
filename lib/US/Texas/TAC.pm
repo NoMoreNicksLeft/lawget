@@ -138,9 +138,10 @@ sub compile {
         # We'll do a copy for the inital markup.
         copy ("$template_root/open.html", $work_in_progress);
 
-        # We need to look up the list of html files.
+        # We need to look up the list of html files, but only the ones without
+        # aa, ab suffices. 
         opendir(DIR, "$build_root/$title_number");
-        my @source_files = grep(/\.html$/,readdir(DIR));
+        my @source_files = grep(/\d\.html$/,readdir(DIR));
         closedir(DIR);
 
         # We also need to convert any pdfs to svg.
