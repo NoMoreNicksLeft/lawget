@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Texas Administrative Code</title>
+    <meta name="description" content="A template file for the Texas Administrative Code.">
+    <meta name="author" content="John M. Oyler">
+    <script type="application/javascript">
+      window.addEventListener('message', function(event) {
+        //console.log(event.data);
+        document.getElementById(event.data.ifr_id).height = event.data.ifr_height;
+        if (event.data.ifr_width) document.getElementById(event.data.ifr_id).width = event.data.ifr_width;
+      });
+    </script>
+    <style type="text/css">
+      * { margin: 0px; padding: 0px; }
+      #otherpages h1 {
+        font: 16pt Garamond;
+        font-variant: small-caps;
+        background: #eaf0dc;
+        color: #506025;
+        padding: 0 0 6px 3px;
+      }
+      #otherpages h2 {
+        font: 12pt Garamond;
+        color: #506025;
+        margin: 14px 0 0 3px;
+        padding-bottom: 7px;
+        border-bottom: 1px solid black;
+      }
+      h3 {
+        font: italic 13pt Garamond;
+        color: #506025;
+        margin: 14px 0 0 3px;
+      }
+      h4 {
+        font: 13pt Garamond;
+        color: #506025;
+        margin: 20px 0 0 3px;
+      }
+      h5 {
+        font: italic 13pt Garamond;
+        color: #506025;
+        margin: 35px 0 30px 3px;
+        page-break-after: avoid;
+      }
+      span {
+        font: 11pt Garamond;
+      }
+      p.sourcenote {
+        font: 11pt Garamond;
+        margin: 30px 0 35px 0;
+      }
+      ol.alpha {
+        counter-reset: abc;
+      }
+      ol.alpha > li:before {
+        counter-increment: abc;
+        content: "(" counter(abc, lower-alpha)") "
+      }
+      ol.ualpha {
+        counter-reset: XYZ;
+      }
+      ol.ualpha > li:before {
+        counter-increment: XYZ;
+        content: "(" counter(XYZ, upper-alpha)") "
+      }
+      ol.arabic {
+        counter-reset: a123;
+      }
+      ol.arabic > li:before {
+        counter-increment: a123;
+        content: "(" counter(a123, decimal)") "
+      }
+      ol.roman {
+        counter-reset: iii;
+      }
+      ol.roman > li:before {
+        counter-increment: iii;
+        content: "(" counter(iii, lower-roman)") "
+      }
+      ol.uroman {
+        counter-reset: VVV;
+      }
+      ol.uroman > li:before {
+        counter-increment: VVV;
+        content: "(" counter(VVV, upper-roman)") "
+      }
+      ol.dalpha {
+        counter-reset: dabc;
+      }
+      ol.dalpha > li:before {
+        counter-increment: dabc;
+        content: "(-" counter(dabc, lower-alpha)"-) "
+      }
+      ol.darabic {
+        counter-reset: d123;
+      }
+      ol.darabic > li:before {
+        counter-increment: d123;
+        content: "(-" counter(d123, decimal)"-) "
+      }
+      ol li {
+        list-style: none;
+        position: relative;
+        text-indent: -1.5em;
+        padding-left: 1.5em;
+      }
+      iframe[src$=".html"] {
+        width: 99%;
+        margin: 30px auto;
+        display: block;
+        border: 1px solid black;
+      }
+      ol.alpha ol.arabic ol.ualpha ol.roman ol.uroman ol.dalpha ol.darabic > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")(" counter(a123, decimal) ")(" counter(XYZ, upper-alpha) ")(" counter(iii, lower-roman) ")(" counter(VVV, upper-roman) ")(-" counter(dabc, lower-alpha) "-)(-" counter(d123, decimal) "-) ";
+      }
+      ol.alpha ol.arabic ol.ualpha ol.roman ol.uroman ol.dalpha > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")(" counter(a123, decimal) ")(" counter(XYZ, upper-alpha) ")(" counter(iii, lower-roman) ")(" counter(VVV, upper-roman) ")(-" counter(dabc, lower-alpha) "-) ";
+      }
+      ol.alpha ol.arabic ol.ualpha ol.roman ol.uroman > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")(" counter(a123, decimal) ")(" counter(XYZ, upper-alpha) ")(" counter(iii, lower-roman) ")(" counter(VVV, upper-roman) ")";
+      }
+      ol.alpha ol.arabic ol.ualpha ol.roman > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")(" counter(a123, decimal) ")(" counter(XYZ, upper-alpha) ")(" counter(iii, lower-roman)") ";
+      }
+      ol.alpha ol.arabic ol.ualpha > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")(" counter(a123, decimal) ")(" counter(XYZ, upper-alpha) ")";
+      }
+      ol.alpha ol.arabic > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")(" counter(a123, decimal) ")" ;
+      }
+      p.rule > ol.arabic > li > a:after {
+        content: "(" counter(a123, decimal) ")" ;
+      }
+      ol.alpha > li > a:after {
+        content: "(" counter(abc, lower-alpha) ")" ;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='otherpages'>
