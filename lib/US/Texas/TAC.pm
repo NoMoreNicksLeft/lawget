@@ -353,7 +353,11 @@ sub convert_pdfs_to_svg {
 }
 
 sub add_script_to_svgs {
+    my ($path) = @_;
 
+    opendir(DIR, $path);
+    my @pdfs = grep(/\.svg$/,readdir(DIR));
+    closedir(DIR);
 }
 
 ################################################################################
