@@ -154,12 +154,14 @@ sub compile {
         $progress->minor(0);
         $progress->max_update_rate(1);
 
+        # We need to keep track of the last of each of title, part, chapter, etc.
+        my %last_headers;
         # Loop through the files...
         my $a = 1;
         open(my $fh, '>>', $work_in_progress);
         foreach my $file (@source_files) {
             # Run it through our grimy little parser and add it to our file.
-            my $file_contents = parse_tac_html_file("$build_root/$title_number/$file");
+            my $file_contents = parse_tac_html_file("$build_root/$title_number/$file", %last_headers);
             # Write it out to the work-in-progress file.
             print $fh $file_contents;
             # Don't forget our progress bar.
