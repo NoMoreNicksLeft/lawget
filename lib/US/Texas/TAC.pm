@@ -399,7 +399,8 @@ sub construct_h_tags {
     }
     # Rule should change every time, regardless, no need to check. Also,
     # let's go ahead and put a space in the section symbol.
-    my $h6 = Lingua::EN::Titlecase->new(original => "$rule_a - $rule_b", mixed_threshold => 0.5);
+    my $h6 = Lingua::EN::Titlecase->new("$rule_a - $rule_b");
+    $h6 =~ s/rule &sect;/Rule &sect&nbsp;/i;
     $headers .= "      <h6>" . $h6 . "</h6>\n";
 
     return ($headers);
