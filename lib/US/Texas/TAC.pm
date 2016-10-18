@@ -365,29 +365,33 @@ sub construct_h_tags {
     my $headers;
     # Now we'll compare what we got against %last_headers to see what we need
     # to add to this iteration's headers.
+    if ($subchapter_a && $last_headers->{'subchapter_a'} ne $subchapter_a) {
+        $last_headers->{'subchapter_a'} = $subchapter_a;
+        #print "$rule_a\n\n"; die;
+        if ($last_headers->{'chapter_a'} ne $chapter_a) {
+            $last_headers->{'chapter_a'} = $chapter_a;
+            if ($last_headers->{'part_a'} ne $part_a) {
+                $last_headers->{'part_a'} = $part_a;
+                if ($last_headers->{'title_a'} ne $title_a) {
+                    $last_headers->{'title_a'} = $title_a;
+                    my $h1 = Lingua::EN::Titlecase->new("$title_a - $title_b");
+                    $headers .= "      <h1>" . $h1 . "</h1>\n";
+                }
+                my $h2 = Lingua::EN::Titlecase->new("$part_a - $part_b");
+                $headers .= "      <h2>" . $h2 . "</h2>\n";
+            }
+            my $h3 = Lingua::EN::Titlecase->new("$chapter_a - $chapter_b");
+            $headers .= "      <h3>" . $h3 . "</h3>\n";
+        }
+        my $h4 = Lingua::EN::Titlecase->new("$subchapter_a - $subchapter_b");
+        $headers .= "      <h4>" . $h4 . "</h4>\n";
+    }
+    # Divisions only occur in a few subchapters. If a subchapter has two,
+    # and we only check if the division has changed when a subchapter has, 
+    # Then we won't see the second division. Nor can we nest everything in
+    # divisions, since most of the time there are none.
     if ($division_a && $last_headers->{'division_a'} ne $division_a) {
         $last_headers->{'division_a'} = $division_a;
-        if ($subchapter_a && $last_headers->{'subchapter_a'} ne $subchapter_a) {
-            $last_headers->{'subchapter_a'} = $subchapter_a;
-            print "$rule_a\n\n"; die;
-            if ($last_headers->{'chapter_a'} ne $chapter_a) {
-                $last_headers->{'chapter_a'} = $chapter_a;
-                if ($last_headers->{'part_a'} ne $part_a) {
-                    $last_headers->{'part_a'} = $part_a;
-                    if ($last_headers->{'title_a'} ne $title_a) {
-                        $last_headers->{'title_a'} = $title_a;
-                        my $h1 = Lingua::EN::Titlecase->new("$title_a - $title_b");
-                        $headers .= "      <h1>" . $h1 . "</h1>\n";
-                    }
-                    my $h2 = Lingua::EN::Titlecase->new("$part_a - $part_b");
-                    $headers .= "      <h2>" . $h2 . "</h2>\n";
-                }
-                my $h3 = Lingua::EN::Titlecase->new("$chapter_a - $chapter_b");
-                $headers .= "      <h3>" . $h3 . "</h3>\n";
-            }
-            my $h4 = Lingua::EN::Titlecase->new("$subchapter_a - $subchapter_b");
-            $headers .= "      <h4>" . $h4 . "</h4>\n";
-        }
         my $h5 = Lingua::EN::Titlecase->new("$division_a - $division_b");
         $headers .= "      <h5>" . $h5 . "</h5>\n";
     }
