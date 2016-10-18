@@ -241,6 +241,11 @@ sub parse_tac_html_file {
     # Next, let's snip out the actual content.
     my ($parsed_markup) = $file_contents =~ /<TABLE\s*>\n<TR>\n<TD><HR><.TD>\n<.TR>\n<TR>\n<TD>(.+?)<\/TD>/s;
 
+    # This thing has mixed \r and \n line endings. Not \r\n, but mixed 
+    # (one or the other). Thanks Brian Watson, took him 3 minutes to
+    # figure it out. We'll strip those now and save everyone grief.
+    $parsed_markup =~ s/(\r|\n)/ /g;
+
     # Now we're going to discombobulate this, since it's all the worst parts of
     # mid-1990s html and what I'm guessing is some sgml/xml monstrosity. And
     # they have the gall to put an xhtml doctype at the top.
@@ -337,11 +342,6 @@ sub reconstruct_rule_file {
     }
     $file_contents .= "</TD><TD>$sn_markup</TD>";
     $file_contents =~ s/<A HREF=".+?" NAME="Continued">.+?<\/A>//g;
-
-    # This thing has mixed \r and \n line endings. Not \r\n, but mixed 
-    # (one or the other). Thanks Brian Watson, took him 3 minutes to
-    # figure it out. We'll strip those now and save everyone grief.
-    $file_contents =~ s/(\r|\n)/ /g;
 
     return $file_contents;
 }
