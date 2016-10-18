@@ -303,8 +303,8 @@ sub parse_tac_html_file {
     $parsed_markup =~ s/ &mdash; >/-->/g;
 
     # Rather than links, let's include supplementary documents inline.
-    my $iframes = "";
-    ($iframes) = $parsed_markup =~ s/.*?<a href="(\/fids\/)(.+?)\.(html|pdf)">Attached Graphic<\/a>.*?(?=<a|$)/<iframe id="$2" src="temp$1$2.$3"><\/iframe>/sg;
+    my $iframes = $parsed_markup;
+    $iframes =~ s/.*?<a href="(\/fids\/)(.+?)\.(html|pdf)">Attached Graphic<\/a>.*?(?=<a|$)/<iframe id="$2" src="$title_number\/includes\/$2.$3"><\/iframe>/sg;
     # We need any pdf document to be an svg instead.
     if ($iframes) { $iframes =~ s/\.pdf"><\/iframe>/.svg"><\/iframe>/sg; }
     # Any wording of "attached graphic" needs to be "see figure".
