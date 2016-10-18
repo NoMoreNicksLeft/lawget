@@ -351,7 +351,7 @@ sub reconstruct_rule_file {
         # Only a source note if the terminal nth of sequence.
         $sn_markup = $1 if $partial_contents =~ m/<TD>(<B>Source Note:.+?)<.TD>/s;
         # Next, let's snip out the actual content.
-        $partial_contents =~ s/^.+<TABLE\s*>\n<TR>\n<TD><HR><.TD>\n<.TR>\n<TR>\n<TD>\s*(<..>.+?)<\/TD>.+$/$1/s;
+        $partial_contents =~ s/^.+<TABLE\s*>\s*<TR>\s*<TD><HR><.TD>\s*<.TR>\s*<TR>\s*<TD>\s*(.+?)<\/TD>.+$/$1/s;
         $file_contents .= $partial_contents;
     }
     $file_contents .= "</TD><TD>$sn_markup</TD>";
