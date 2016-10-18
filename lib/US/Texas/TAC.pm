@@ -104,12 +104,24 @@ sub download {
                     $z++;
                     $progress->update($z);
                     $b++;
+
+                    # Supplementary documents are found in continued pages too..
+                    my $mech3 = $mech2->clone();
+                    foreach my $doc_link ($mech2->find_all_links(text_regex => qr/Attached Graphic/)) {
+                        my ($fn) = $doc_link->url() =~ /.+\/(.+)$/;
+                        $mech3->get($doc_link);
+                        # The binmode needs to be utf8 for html, but raw for pdfs (and everything else?).
+                        my $binmode = ($fn =~ /\.html$/ ? ':utf8' : ':raw');
+                        $mech3->save_content("$build_root/$title_number/includes/$fn", binmode => $binmode);
+                        $z++;
+                        $progress->update($z);
+                    }
                 }
             }
 
             # There are also an irritating number of linked supplementary documents.
             my $mech2 = $mech->clone();
-            foreach my $doc_link ($mech->find_all_links(url_regex => qr/fids/)) {
+            foreach my $doc_link ($mech->find_all_links(text_regex => qr/Attached Graphic/)) {
                 my ($fn) = $doc_link->url() =~ /.+\/(.+)$/;
                 $mech2->get($doc_link);
                 # The binmode needs to be utf8 for html, but raw for pdfs (and everything else?).
