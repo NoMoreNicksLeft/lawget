@@ -189,10 +189,11 @@ sub compile {
             $progress->update($a);
             $a++;
         }
-
-        
-
+        # Close up the html.
+        print $fh "    </div>\n  </body>\n</html>";
         close $fh;
+
+
     }
 }
 
@@ -438,7 +439,9 @@ sub convert_pdfs_to_svg {
     my @pdfs = grep(/\.pdf$/,readdir(DIR));
     closedir(DIR);
 
-    print "Converting (Title x) PDFs to SVG ...\n";
+    my ($title_number) = $path =~ m/tac.(\d+).includes/;
+
+    print "Converting (Title $title_number) PDFs to SVG ...\n";
     my $progress = Term::ProgressBar->new({count => scalar(@pdfs), ETA => 'linear', remove => 1});
     $progress->minor(0);
     $progress->max_update_rate(1);
