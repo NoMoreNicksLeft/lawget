@@ -161,7 +161,9 @@ sub compile {
         $progress->max_update_rate(1);
 
         # We need to keep track of the last of each of title, part, chapter, etc.
-        my %last_headers;
+        my %last_headers = ('division_a' => 'z', 'subchapter_a' => 'z', 
+                            'chapter_a' => 'z', 'part_a' => 'z', 
+                            'title_a' => 'z');
         # Loop through the files...
         my $a = 1;
         open(my $fh, '>>', $work_in_progress);
