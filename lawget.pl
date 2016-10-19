@@ -5,6 +5,7 @@ use strict;
 use WWW::Mechanize;
 use File::Path;
 use Config::JSON;
+use Getopt::Long;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
 use File::Basename qw(dirname);
