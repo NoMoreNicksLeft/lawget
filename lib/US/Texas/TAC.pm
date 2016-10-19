@@ -158,8 +158,6 @@ sub compile {
 
         # We also need to convert any pdfs to svg.
         convert_pdfs_to_svg("$build_root/$title_number/includes");
-        # We need to tack on some javascript to them
-        add_script_to_svgs("$build_root/$title_number/includes");
 
         # We need to add some to the htmls too.
         opendir(DIR, "$build_root/$title_number/includes");
@@ -449,18 +447,16 @@ sub convert_pdfs_to_svg {
     my $a = 1;
     foreach my $pdf (@pdfs) {
         my $svg = $pdf; $svg =~ s/\.pdf$/.svg/; 
+        # We need to invoke inkscape to do the svg conversion.
         system($inkscape . " --without-gui --file=$path/$pdf --export-plain-svg=$path/$svg &>/dev/null");
+        # Also need to add a script tag to the end of the svg document.
+        my $doc = HTML::Manipulator::Document->from_file('$path/$svg');
+        my $svg_script = read_file("templates/us/texas/tac/svg.js");
+        $doc->insert_before_end(svg2 => $svg_script)
+        $doc->save_as("$path/$svg");
         $progress->update($a);
         $a++;
     }
-}
-
-sub add_script_to_svgs {
-    my ($path) = @_;
-
-    opendir(DIR, $path);
-    my @pdfs = grep(/\.svg$/,readdir(DIR));
-    closedir(DIR);
 }
 
 ################################################################################
