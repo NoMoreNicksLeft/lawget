@@ -18,6 +18,7 @@ use Term::ProgressBar;
 use File::Copy qw(copy);
 use File::Slurp;
 use Lingua::EN::Titlecase;
+use HTML::Manipulator::Document;
 
 ################################################################################
 ################################### Globals ####################################
