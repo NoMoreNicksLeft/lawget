@@ -4,11 +4,15 @@ use strict;
 # Our includes.
 use WWW::Mechanize;
 use File::Path;
+use Config::JSON;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
 use File::Basename qw(dirname);
 use Cwd  qw(abs_path);
 use lib dirname(dirname abs_path $0) . '/lawget/lib';
+
+# Load up the config file.
+my $config = Config::JSON->new("config.json");
 
 # Check for options. If none, assume interactive mode.
 
