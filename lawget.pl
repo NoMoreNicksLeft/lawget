@@ -42,11 +42,13 @@ print "";
 
 
 
-load US::Texas::TAC "test";
+eval {
+    require US::Texas::TAC;
+    US::Texas::TAC->configure($config);
+} ;
+if($@) { print "error or something"; }
 
 #US::Texas::TAC::download('http://texreg.sos.state.tx.us/public/readtac$ext.viewtac', (1));
-
-my $aaa = "prize\n";
 
 US::Texas::TAC::compile((1));
 

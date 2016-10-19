@@ -23,6 +23,7 @@ use Lingua::EN::Titlecase;
 ################################### Globals ####################################
 ################################################################################
 
+our $config;
 my $build_root = "build/us/texas/tac";
 my $template_root = "templates/us/texas/tac";
 my %size_estimate = ( 1  => 3875,
@@ -47,6 +48,11 @@ my $inkscape="/Applications/Inkscape.app/Contents/Resources/bin/inkscape";
 ################################################################################
 ############################### Public functions ###############################
 ################################################################################
+
+sub configure {
+    my ($package, $z) = @_;
+    $config = $z;
+}
 
 sub download {
     # We have a few arguments for this.
