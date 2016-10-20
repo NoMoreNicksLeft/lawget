@@ -29,24 +29,24 @@ my $config = Config::JSON->new("config.json");
 # Let's give the user some sort of hello message.
 print "\nWelcome to lawget.\n" .
       "You can download statutory code, administrative code, law reporters, treaties,\n" .
-      "etc from a number of sources. Type 'quit' (without quotes) at any time to exit.\n\n";
+      "etc from a number of sources. Type 'quit' (without quotes) at any time to exit.\n";
 
-print "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16).\n" .
-      "The titles numbers are not necessarily sequential due to various factors.\n\n";
-print "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or any combination:\n";
-print "Which title(s) would you like to download? [all] ";
+# print "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16).\n" .
+#       "The titles numbers are not necessarily sequential due to various factors.\n\n";
+# print "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or any combination:\n";
+# print "Which title(s) would you like to download? [all] ";
 
-my $title_list = <> || "0";
-chomp($title_list);
+# my $title_list = <> || "0";
+# chomp($title_list);
 
-print "\nAvilable formats are: pdf, html\n";
-print "What document format do you want the titles converted to? [pdf] ";
+# print "\nAvilable formats are: pdf, html\n";
+# print "What document format do you want the titles converted to? [pdf] ";
 
-my $title_format = <> || "pdf";
-chomp($title_format);
+# my $title_format = <> || "pdf";
+# chomp($title_format);
+
 menu('United States');
 
-print "";
 exit;
 
 #menu_world();
