@@ -9,6 +9,7 @@ use Config::JSON;
 use YAML qw'LoadFile';
 use Getopt::Long;
 use Text::Wrap;
+use Term::ReadKey;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
 use File::Basename qw(dirname);
@@ -20,6 +21,10 @@ use US::Texas::TAC;
 # Turn off the smartmatch warning.
 no warnings 'experimental::smartmatch';
 
+# Set the text wrap up...
+my ($wchar, $hchar, $wpixels, $hpixels) = GetTerminalSize();
+$Text::Wrap::columns = $wchar;
+
 # Load up the menu file (don't want to do it in menu(), just bad.)
 my $menu_config = LoadFile("menu.yaml");
 
@@ -29,9 +34,11 @@ my $config = Config::JSON->new("config.json");
 # Check for options. If none, assume interactive mode.
 
 # Let's give the user some sort of hello message.
-print "\nWelcome to lawget.\n" .
-      "You can download statutory code, administrative code, law reporters, treaties,\n" .
-      "etc from a number of sources. Type 'quit' (without quotes) at any time to exit.\n";
+print "\nWelcome to lawget.\n\n";
+my $banner = "You can download statutory code, administrative code, law reporters, treaties, etc from a number of " .
+             "sources. Type 'quit' (without quotes) at any time to exit.";
+print wrap('', '', $banner);
+
 
 # print "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16).\n" .
 #       "The titles numbers are not necessarily sequential due to various factors.\n\n";
