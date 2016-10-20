@@ -14,47 +14,52 @@
     </script>
     <style type="text/css">
       * { margin: 0px; padding: 0px; }
-      #otherpages h1 {
-        font: 16pt Garamond;
+      a { 
+        font: 13pt Times;
+        color: #506025;
+      }
+      h1 {
+        font: 16pt Times;
         font-variant: small-caps;
         background: #eaf0dc;
         color: #506025;
         padding: 0 0 6px 3px;
       }
-      #otherpages h2 {
-        font: 12pt Garamond;
+      h2 {
+        font: 16pt Times;
+        font-variant: small-caps;
+        background: #eaf0dc;
+        color: #506025;
+        padding: 0 0 6px 3px;
+      }
+      h3 {
+        font: 12pt Times;
         color: #506025;
         margin: 14px 0 0 3px;
         padding-bottom: 7px;
         border-bottom: 1px solid black;
       }
-      h3 {
-        font: italic 13pt Garamond;
+      h4 {
+        font: italic 13pt Times;
         color: #506025;
         margin: 14px 0 0 3px;
       }
-      h4 {
-        font: 13pt Garamond;
+      h5 {
+        font: 13pt Times;
         color: #506025;
         margin: 20px 0 0 3px;
       }
-      h5 {
-        font: italic 13pt Garamond;
-        color: #506025;
-        margin: 35px 0 30px 3px;
-        page-break-after: avoid;
-      }
       h6 {
-        font: italic 13pt Garamond;
+        font: italic 13pt Times;
         color: #506025;
         margin: 35px 0 30px 3px;
         page-break-after: avoid;
       }
       span {
-        font: 11pt Garamond;
+        font: 11pt Times;
       }
       p.sourcenote {
-        font: 11pt Garamond;
+        font: 11pt Times;
         margin: 30px 0 35px 0;
       }
       ol.alpha {
@@ -114,6 +119,11 @@
       }
       iframe[src$=".html"] {
         width: 99%;
+        margin: 30px auto;
+        display: block;
+        border: 1px solid black;
+      }
+      iframe[src$=".svg"] {
         margin: 30px auto;
         display: block;
         border: 1px solid black;
