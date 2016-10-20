@@ -15,6 +15,8 @@ use File::Basename qw(dirname);
 use Cwd  qw(abs_path);
 use lib dirname(dirname abs_path $0) . '/lawget/lib';
 
+use US::Texas::TAC;
+
 # Turn off the smartmatch warning.
 no warnings 'experimental::smartmatch';
 
