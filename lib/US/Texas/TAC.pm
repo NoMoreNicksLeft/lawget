@@ -55,6 +55,23 @@ sub configure {
     $config = $z;
 }
 
+sub list {
+    my ($tac_url, @titles) = @_;
+
+    # We'll grab the TAC page, regex out the urls we need, and return those.
+    my $mech = WWW::Mechanize->new();
+    $mech->get($tac_url);
+
+    # We're going to loop through the (title) links on the page.
+    my $page = $mech->content();
+    while ($page =~ /HREF="(.+?)" NAME="TITLE">TITLE (\d+)</g) {
+        my $title_link = $1;
+        my $title_number = $2;
+    }
+
+    # We'll return a list of formatted menu entries.
+}
+
 sub download {
     # We have a few arguments for this.
     my ($tac_url, @titles) = @_;
@@ -235,8 +252,10 @@ sub get_title_urls {
         my $title_link = $1;
         my $title_number = $2;
 
+        # Do nothing, we'll get them all.
+        if ($titles[0] eq "all") { ; } 
         # Is this title one we actually want to get?
-        if (!($title_number ~~ @titles)) { next; }
+        elsif (!($title_number ~~ @titles)) { next; }
 
         # The Title page.
         $mech->get($title_link);

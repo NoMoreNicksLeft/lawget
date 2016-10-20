@@ -1,0 +1,40 @@
+World:
+  subdivisions:
+    - North America
+    - South America
+    - Europe
+    - Africa
+    - Pacific
+  s-heading:    Regions with available materials:
+  question:     Which region of the world would you like to browse?
+North America:
+  subdivisions:
+    - United States
+    - Canada
+    - Mexico
+  s-heading:    Countries with available materials:
+  question:     Which country of North America would you like to browse?
+United States:
+  materials: 
+    - Founding documents
+    - Statutory law
+    - Administrative law
+    - Treaties
+  subdivisions:
+    - Oklahoma
+    - Texas
+  m-heading:    The following materials are available for United States:
+  s-heading:    Additionally, materials are available for the following subdivisions:
+  question:     Which option would you like to browse?
+Texas:
+  materials:
+    - Founding documents
+    - Statutory law
+    - Administrative law
+  subdivisions:
+    - City of Lubbock
+  m-heading:    The following materials are available for Texas:
+  s-heading:    Additionally, materials are available for the following subdivisions:
+  s-start:      100
+  question:     Which option would you like to browse?
+  default:      test

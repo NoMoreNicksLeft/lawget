@@ -5,7 +5,9 @@ use strict;
 use WWW::Mechanize;
 use File::Path;
 use Config::JSON;
+use YAML qw'LoadFile';
 use Getopt::Long;
+use Text::Wrap;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
 use File::Basename qw(dirname);
@@ -35,8 +37,10 @@ print "What document format do you want the titles converted to? [pdf] ";
 
 my $title_format = <> || "pdf";
 chomp($title_format);
+menu('United States');
 
 print "";
+exit;
 
 #menu_world();
 
@@ -57,108 +61,59 @@ US::Texas::TAC::compile((1));
 ################################# Subroutines ##################################
 ################################################################################
 
-sub menu_world {
-    my ($tac_url, @titles) = @_;
+sub menu {
+    my ($menu_name) = @_;
 
-    print "\n"; 
-    print "Regions with available materials:\n";
-    print "[1] North America\n";
-    # print "[2] South America\n";
-    # print "[3] Europe\n";
-    # print "[4] Mars\n";
-    print "\n"; 
-    print "Which region of the world would you like to browse? [] ";
-    # Get the answer back.
+    # Let's make sure this is always passed a menu name.
+    if (!exists $menu_config->{$menu_name}) {
+        print "\nWARNING: The menu.yaml file may be broken, returning to the top.\n";
+        menu("World");
+    }
 
+    # This file was passed a label of the menu object to retrieve.
+    my $menu = $menu_config->{$menu_name};
+
+    # Let's just keep track of which index is which here.
+    my %options;
+
+    # Let's do a newline. Just because.
+    print "\n";
+
+    # We need to print the m-heading if it exists (might not early in the tree).
+    print $menu->{'m-heading'} . "\n" if exists $menu->{'m-heading'};
+    # The materials menus...
+    my $a = 1;
+    foreach my $material (@{$menu->{'materials'}}) {
+        print "  [$a] $material\n";
+        $options{$a} = $material;
+        $a++;
+    }
+    # We need to print the s-heading if it exists.
+    print $menu->{'s-heading'} . "\n" if exists $menu->{'s-heading'};
+    # The materials menus...
+    $a = $menu->{'s-start'} if exists $menu->{'s-start'};
+    foreach my $subdivision (@{$menu->{'subdivisions'}}) {
+        print "  [$a] $subdivision\n";
+        $options{$a} = $subdivision;
+        $a++;
+    }
+
+    # We'll follow up with a question.
+    my $default = $menu->{'default'} || "";
+    print "\n" . $menu->{'question'} . " [$default] " if exists $menu->{'question'};
+
+    # Wait for their answer...
     my $selection = <>;
     chomp($selection);
 
-    # Let's see what they chose.
-    if    ($selection == 1)      { menu_north_america(); }
-    elsif ($selection eq "quit") { exit; }
-    else                    {
-        print "Wrong answer! Cut this shit out and give a real one.\n\n";
-        menu_world();
-    }
-    
+    if    ($selection ~~ ["quit", "q", "exit"]) { exit; }
+    elsif ($selection ~~ ["top", "start"])      { menu("World"); }
+    elsif (exists $options{$selection})         { menu($options{$selection}); }
+    # elsif 
+    #print Dumper($menu);
+
 }
 
-sub menu_north_america {
-
-    print "\n"; 
-    print "Countries with available materials:\n";
-    print "[1] United States\n";
-    # print "[2] Canada\n";
-    # print "[3] Mexico\n";
-    print "\n"; 
-    print "Which country of North America would you like to browse? [] ";
-
-    my $selection = <>;
-    chomp($selection);
-
-    # Let's see what they chose.
-    if    ($selection == 1)      { menu_united_states(); }
-    elsif ($selection eq "quit") { exit; }
-    else                    {
-        print "Wrong answer! Cut this shit out and give a real one.\n\n";
-        menu_north_america();
-    }
-}
-
-sub menu_united_states {
-
-    print "\n"; 
-    print "The following materials are available for United States:\n";
-    print "[1] Founding documents\n";
-    print "[2] Statutory law\n";
-    print "[3] Administrative law\n";
-    print "[4] Treaties\n";
-    print "\nAdditionally, materials are available for the following subdivisions:\n";
-    print "[43] Texas\n";
-    print "\n"; 
-    print "Which option would you like to browse? [] ";
-
-    my $selection = <>;
-    chomp($selection);
-
-    # Let's see what they chose.
-    if    ($selection == 1)      { }
-    elsif ($selection == 2)      { }
-    elsif ($selection == 3)      { }
-    elsif ($selection == 43)     { menu_state_of_texas(); }
-    elsif ($selection eq "quit") { exit; }
-    else                    {
-        print "Wrong answer! Cut this shit out and give a real one.\n\n";
-        menu_united_states();
-    }
-}
-
-sub menu_state_of_texas {
-
-    print "\n"; 
-    print "The following materials are available for Texas:\n";
-    print "[1] Founding documents\n";
-    print "[2] Statutory law\n";
-    print "[3] Administrative law\n";
-    print "\nAdditionally, materials are available for the following subdivisions:\n";
-    print "[100] City of Lubbock\n";
-    print "\n"; 
-    print "Which option would you like to browse? [] ";
-
-    my $selection = <>;
-    chomp($selection);
-
-    # Let's see what they chose.
-    if    ($selection == 1)      { }
-    elsif ($selection == 2)      { }
-    elsif ($selection == 3)      { menu_state_of_texas_admin_law(); }
-    elsif ($selection == 43)     { }
-    elsif ($selection eq "quit") { exit; }
-    else                    {
-        print "Wrong answer! Cut this shit out and give a real one.\n\n";
-        menu_state_of_texas();
-    }
-}
 
 sub menu_state_of_texas_admin_law {
 
