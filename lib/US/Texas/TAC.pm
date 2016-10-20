@@ -437,7 +437,7 @@ sub construct_h_tags {
     $h6 =~ s/rule &sect;/Rule &sect&nbsp;/i;
     $headers .= "      <h6>" . $h6 . "</h6>\n";
 
-    return ($headers);
+    return $headers;
 }
 
 sub get_piece_numbers {
@@ -447,8 +447,8 @@ sub get_piece_numbers {
             $file_contents =~ m/NAME="TITLE">(.+?)<.A><.TD>.+?<TD WIDTH=\d+>(.+?)<.TD>/s;
 
     # Need to have the title number and rule.
-    my ($title_number) = $title_a =~ /(\d+)/;
-    my ($rule_number) = $rule_a =~ /^.+?([0-9.]+)/;
+    my ($title_number) = $title_a =~ m/(\d+)/;
+    my ($rule_number) = $rule_a =~ m/^.+?([0-9.]+)/;
 
     return ($title_number, $rule_number);
 }
@@ -473,9 +473,9 @@ sub convert_pdfs_to_svg {
         # We need to invoke inkscape to do the svg conversion.
         system($inkscape . " --without-gui --file=$path/$pdf --export-plain-svg=$path/$svg &>/dev/null");
         # Also need to add a script tag to the end of the svg document.
-        my $doc = HTML::Manipulator::Document->from_file('$path/$svg');
+        my $doc = HTML::Manipulator::Document->from_file("$path/$svg");
         my $svg_script = read_file("templates/us/texas/tac/svg.js");
-        $doc->insert_before_end(svg2 => $svg_script)
+        $doc->insert_before_end(svg2 => $svg_script);
         $doc->save_as("$path/$svg");
         $progress->update($a);
         $a++;
