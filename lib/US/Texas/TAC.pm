@@ -152,10 +152,8 @@ sub compile {
 
     # We might be compiling more than one here.
     foreach my $title_number (@titles) {
-        my $work_in_progress = "$build_root/${title_number}wip.html";
-
-        # We'll do a copy for the inital markup.
-        copy ("$template_root/open.html", $work_in_progress);
+        # Name of the html file we're going to create.
+        my $work_in_progress;
 
         # We need to look up the list of html files, but only the ones without
         # aa, ab suffices. 
@@ -180,13 +178,30 @@ sub compile {
         # We need to keep track of the last of each of title, part, chapter, etc.
         my %last_headers = ('division_a' => 'z', 'subchapter_a' => 'z', 
                             'chapter_a' => 'z', 'part_a' => 'z', 
-                            'title_a' => 'z');
+                            'title_a' => 'z', 'section' => 'z');
+        my $last_section_change = 0;
         # Loop through the files...
         my $a = 1;
-        open(my $fh, '>>', $work_in_progress);
+        my $fh;
         foreach my $file (@source_files) {
             # Run it through our grimy little parser and add it to our file.
             my $file_contents = parse_tac_html_file("$build_root/$title_number/$file", \%last_headers);
+            # This stuff is just too big. A single html file can be upwards of
+            # 8 megs, and the resulting pdf file 2000+ pages. Let's break this
+            # up by "part" section.
+            if ($last_headers{'section'} ne $last_section_change) {
+                # Close the old file, if there is one.
+                if ($last_section_change) { 
+                    print $fh "    </div>\n  </body>\n</html>";
+                    close $fh;
+                }
+                # Update this value so we can check next iteration.
+                $last_section_change = $last_headers{'section'};
+                # New file, get it ready.
+                $work_in_progress = qq($build_root/t${title_number}p$last_section_change.wip.html);
+                copy ("$template_root/open.html", $work_in_progress);
+                open($fh, '>>', $work_in_progress);
+            }
             # Write it out to the work-in-progress file.
             print $fh "      <!-- $file -->\n";
             print $fh $file_contents;
@@ -194,11 +209,9 @@ sub compile {
             $progress->update($a);
             $a++;
         }
-        # Close up the html.
+        # Close up the (last) html.
         print $fh "    </div>\n  </body>\n</html>";
         close $fh;
-
-
     }
 }
 
@@ -399,6 +412,9 @@ sub construct_h_tags {
                 }
                 my $h2 = Lingua::EN::Titlecase->new("$part_a - $part_b");
                 $headers .= "      <h2>" . $h2 . "</h2>\n";
+                # Now we're going to set this, so that we can start a new file.
+                # Could use another section label, but for TAC part makes sense.
+                ($last_headers->{'section'}) = $part_a =~ m/(\d+)/;
             }
             my $h3 = Lingua::EN::Titlecase->new("$chapter_a - $chapter_b");
             $headers .= "      <h3>" . $h3 . "</h3>\n";
