@@ -17,6 +17,10 @@ use lib dirname(dirname abs_path $0) . '/lawget/lib';
 
 # Turn off the smartmatch warning.
 no warnings 'experimental::smartmatch';
+
+# Load up the menu file (don't want to do it in menu(), just bad.)
+my $menu_config = LoadFile("menu.yaml");
+
 # Load up the config file.
 my $config = Config::JSON->new("config.json");
 
