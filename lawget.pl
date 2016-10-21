@@ -16,8 +16,6 @@ use File::Basename qw(dirname);
 use Cwd  qw(abs_path);
 use lib dirname(dirname abs_path $0) . '/lawget/lib';
 
-use US::Texas::TAC;
-
 # Turn off the smartmatch warning.
 no warnings 'experimental::smartmatch';
 
@@ -49,6 +47,12 @@ print wrap('', '', $banner);
 
 # print "\nAvilable formats are: pdf, html\n";
 # print "What document format do you want the titles converted to? [pdf] ";
+eval {
+    require US::Texas::TAC;
+    US::Texas::TAC->configure($app_config);
+} ;
+if($@) { print "error or something"; }
+US::Texas::TAC::download((1));
 
 my $module = menu('United States');
 print "this is the module $module\n";
@@ -58,11 +62,7 @@ exit;
 
 
 
-eval {
-    require US::Texas::TAC;
-    US::Texas::TAC->configure($config);
-} ;
-if($@) { print "error or something"; }
+
 
 #US::Texas::TAC::download('http://texreg.sos.state.tx.us/public/readtac$ext.viewtac', (1));
 
