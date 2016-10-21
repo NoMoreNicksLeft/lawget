@@ -100,8 +100,14 @@ sub menu {
     # The materials menus...
     my $a = 1;
     foreach my $material (@{$menu->{'materials'}}) {
-        print "  [$a] $material\n";
-        $options{$a} = $material;
+        if (ref($material) eq "HASH") { 
+            $options{$a} = $material->{'id'}; 
+            print "  [$a] " . $material->{'label'} . "\n";
+        }
+        else { 
+            $options{$a} = $material;
+            print "  [$a] $material\n";
+        }
         $a++;
     }
     # We need to print the s-heading if it exists.
@@ -109,8 +115,15 @@ sub menu {
     # The materials menus...
     $a = $menu->{'s-start'} if exists $menu->{'s-start'};
     foreach my $subdivision (@{$menu->{'subdivisions'}}) {
-        print "  [$a] $subdivision\n";
-        $options{$a} = $subdivision;
+        # Sometimes we have to have this value be a hash instead of scalar...
+        if (ref($subdivision) eq "HASH") { 
+            $options{$a} = $subdivision->{'id'}; 
+            print "  [$a] " . $subdivision->{'label'} . "\n";
+        }
+        else { 
+            $options{$a} = $subdivision;
+            print "  [$a] $subdivision\n";
+        }
         $a++;
     }
 

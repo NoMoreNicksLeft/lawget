@@ -21,10 +21,14 @@ United States:
     - Administrative law
     - Treaties
   subdivisions:
+    - label: Georgia
+      id:    us_georgia
+    - New Mexico
     - Oklahoma
     - Texas
   m-heading:    The following materials are available for United States:
   s-heading:    Additionally, materials are available for the following subdivisions:
+  s-start:      10
   question:     Which option would you like to browse?
 Texas:
   materials:
@@ -32,7 +36,8 @@ Texas:
     - Statutory law
     - Administrative law
   subdivisions:
-    - City of Lubbock
+    - label: City of Lubbock
+      id:    us_tx_lubbock
   m-heading:    The following materials are available for Texas:
   s-heading:    Additionally, materials are available for the following subdivisions:
   s-start:      100
