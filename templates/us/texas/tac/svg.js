@@ -1,5 +1,5 @@
 
-   <script type="text/javascript" id="jmo20090924">
+   <script type="text/javascript">
       var iid = /.+\/(.+?)\..+$/.exec(window.location.href)[1];
       var s = document.getElementsByTagName('svg')[0];
       var bb = s.getBBox();
