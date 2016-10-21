@@ -10,6 +10,7 @@ use YAML qw'LoadFile';
 use Getopt::Long;
 use Text::Wrap;
 use Term::ReadKey;
+use Data::Dumper;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
 use File::Basename qw(dirname);
@@ -42,8 +43,6 @@ print wrap('', '', $banner);
 # print "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or any combination:\n";
 # print "Which title(s) would you like to download? [all] ";
 
-# my $title_list = <> || "0";
-# chomp($title_list);
 
 # print "\nAvilable formats are: pdf, html\n";
 # print "What document format do you want the titles converted to? [pdf] ";
