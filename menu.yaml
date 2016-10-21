@@ -21,8 +21,8 @@ United States:
     - Administrative law
     - Treaties
   subdivisions:
-    - label: Georgia
-      id:    us_georgia
+    - label:  Georgia
+      id:     us_georgia
     - New Mexico
     - Oklahoma
     - Texas
@@ -32,9 +32,12 @@ United States:
   question:     Which option would you like to browse?
 Texas:
   materials:
-    - Founding documents
-    - Statutory law
-    - Administrative law
+    - label:  Founding documents
+      module: US::Texas::Constitution
+    - label:  Statutory law
+      module: US::Texas::Statutes
+    - label:  Administrative law
+      module: US::Texas::TAC
   subdivisions:
     - label: City of Lubbock
       id:    us_tx_lubbock
