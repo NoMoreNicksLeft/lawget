@@ -25,11 +25,10 @@ no warnings 'experimental::smartmatch';
 my ($wchar, $hchar, $wpixels, $hpixels) = GetTerminalSize();
 $Text::Wrap::columns = $wchar;
 
+# Load up the config file.
+my $app_config = LoadFile("config.yaml");
 # Load up the menu file (don't want to do it in menu(), just bad.)
 my $menu_config = LoadFile("menu.yaml");
-
-# Load up the config file.
-my $config = Config::JSON->new("config.json");
 
 # Check for options. If none, assume interactive mode.
 

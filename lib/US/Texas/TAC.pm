@@ -44,7 +44,6 @@ my %size_estimate = ( 1  => 3875,
                       40 => 4000,
                       43 => 4000,
                     );
-my $inkscape="/Applications/Inkscape.app/Contents/Resources/bin/inkscape";
 
 ################################################################################
 ############################### Public functions ###############################
@@ -56,7 +55,9 @@ sub configure {
 }
 
 sub list {
-    my ($tac_url, @titles) = @_;
+    my (@titles) = @_;
+
+    my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
 
     # We'll grab the TAC page, regex out the urls we need, and return those.
     my $mech = WWW::Mechanize->new();
@@ -74,7 +75,9 @@ sub list {
 
 sub download {
     # We have a few arguments for this.
-    my ($tac_url, @titles) = @_;
+    my (@titles) = @_;
+
+    my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
 
     my $title_data = get_title_urls($tac_url, @titles);
 
@@ -490,6 +493,7 @@ sub convert_pdfs_to_svg {
     foreach my $pdf (@pdfs) {
         my $svg = $pdf; $svg =~ s/\.pdf$/.svg/; 
         # We need to invoke inkscape to do the svg conversion.
+        my $inkscape = $config->{'binpath'}->{'osx'}->{'inkscape'};
         system($inkscape . " --without-gui --file=$path/$pdf --export-plain-svg=$path/$svg &>/dev/null");
         # Also need to add a script tag to the end of the svg document.
         my $doc = HTML::Manipulator::Document->from_file("$path/$svg");
