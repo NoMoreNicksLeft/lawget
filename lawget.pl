@@ -50,11 +50,8 @@ print wrap('', '', $banner);
 # print "\nAvilable formats are: pdf, html\n";
 # print "What document format do you want the titles converted to? [pdf] ";
 
-# my $title_format = <> || "pdf";
-# chomp($title_format);
-
-menu('United States');
-
+my $module = menu('United States');
+print "this is the module $module\n";
 exit;
 
 #menu_world();
@@ -99,13 +96,10 @@ sub menu {
     # The materials menus...
     my $a = 1;
     foreach my $material (@{$menu->{'materials'}}) {
-        if (ref($material) eq "HASH") { 
-            $options{$a} = $material->{'id'}; 
-            print "  [$a] " . $material->{'label'} . "\n";
-        }
-        else { 
-            $options{$a} = $material;
-            print "  [$a] $material\n";
+        if (ref($material) eq "HASH") {
+            $options{$a}{'type'} = 'module';
+            $options{$a}{'name'} = $material->{'module'};
+            print "  [$a] " . $material->{'label'} . "\n"; 
         }
         $a++;
     }
@@ -116,11 +110,13 @@ sub menu {
     foreach my $subdivision (@{$menu->{'subdivisions'}}) {
         # Sometimes we have to have this value be a hash instead of scalar...
         if (ref($subdivision) eq "HASH") { 
-            $options{$a} = $subdivision->{'id'}; 
+            $options{$a}{'type'} = 'menu';
+            $options{$a}{'id'} = $subdivision->{'id'};
             print "  [$a] " . $subdivision->{'label'} . "\n";
         }
-        else { 
-            $options{$a} = $subdivision;
+        else {
+            $options{$a}{'type'} = 'menu';
+            $options{$a}{'id'} = $subdivision;
             print "  [$a] $subdivision\n";
         }
         $a++;
@@ -134,9 +130,11 @@ sub menu {
     my $selection = <>;
     chomp($selection);
 
-    if    ($selection ~~ ["quit", "q", "exit"]) { exit; }
-    elsif ($selection ~~ ["top", "start"])      { menu("World"); }
-    elsif (exists $options{$selection})         { menu($options{$selection}); }
+    if    ($selection ~~ ["quit", "q", "exit"])   { exit; }
+    elsif ($selection ~~ ["top", "start"])        { menu("World"); }
+    elsif (exists $options{$selection}->{'id'})   { menu($options{$selection}->{'id'}); }
+    elsif (exists $options{$selection}->{'name'}) { return $options{$selection}->{'name'}; }
+    else { ; }
     # elsif 
     #print Dumper($menu);
 
