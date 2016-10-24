@@ -19,12 +19,14 @@ use File::Copy qw(copy);
 use File::Slurp;
 use Lingua::EN::Titlecase;
 use HTML::Manipulator::Document;
+use Text::Wrap;
 
 ################################################################################
 ################################### Globals ####################################
 ################################################################################
 
 our $config;
+my %menu_list = ('empty' => 'true');
 my $build_root = "build/us/texas/tac";
 my $template_root = "templates/us/texas/tac";
 my %size_estimate = ( 1  => 3875,
@@ -54,23 +56,53 @@ sub configure {
     $config = $z;
 }
 
-sub list {
-    my (@titles) = @_;
+sub menu {
+    #my (@titles) = @_;
 
     my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
 
-    # We'll grab the TAC page, regex out the urls we need, and return those.
-    my $mech = WWW::Mechanize->new();
-    $mech->get($tac_url);
+    # The user might return to this menu 3 or 4 times, no need to hammer it
+    # every time. 
+    if (exists ($menu_list{'empty'}) && $menu_list{'empty'} eq 'true') {
+        # We'll grab the TAC page, regex out the urls we need, and return those.
+        my $mech = WWW::Mechanize->new();
+        $mech->get($tac_url);
 
-    # We're going to loop through the (title) links on the page.
-    my $page = $mech->content();
-    while ($page =~ /HREF="(.+?)" NAME="TITLE">TITLE (\d+)</g) {
-        my $title_link = $1;
-        my $title_number = $2;
+        # We're going to loop through the (title) links on the page.
+        my $page = $mech->content();
+        while ($page =~ /NAME="TITLE">TITLE (\d+)<.+?NAME="TITLE_NAME">(.+?)</sg) {
+            $menu_list{$1} = Lingua::EN::Titlecase->new($2);
+        }
+        delete $menu_list{'empty'};
     }
 
-    # We'll return a list of formatted menu entries.
+    print "\n"; 
+    print wrap('', '', "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16). " .
+          "The titles numbers are not necessarily sequential due to various factors.\n");
+    print "\n"; 
+    print wrap('', '', "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or both:\n");          
+
+    # Let's look up the widest key to make this look pretty.
+    my $option_width = 0;
+    foreach my $key (keys %menu_list) { 
+        if (length($key) > $option_width) { $option_width = length($key); } 
+    }
+
+    foreach my $option (sort {$a <=> $b} keys %menu_list) {
+        print "  [$option] " . (" " x ($option_width - length($option))) . $menu_list{$option} . "\n";
+    }
+    print "Which title(s) would you like to download? [all] ";
+
+    my $materials = <> || 'all';
+    # We need to process the answer into an array.
+    chomp($materials);
+
+    print "\nAvilable formats are: pdf, html\n";
+    print "Which document format would you like these converted to? [pdf] ";
+
+    my $format = <> || 'pdf';
+    chomp($format);
+
 }
 
 sub download {
@@ -255,10 +287,8 @@ sub get_title_urls {
         my $title_link = $1;
         my $title_number = $2;
 
-        # Do nothing, we'll get them all.
-        if ($titles[0] eq "all") { ; } 
         # Is this title one we actually want to get?
-        elsif (!($title_number ~~ @titles)) { next; }
+        if (!($title_number ~~ @titles)) { next; }
 
         # The Title page.
         $mech->get($title_link);
