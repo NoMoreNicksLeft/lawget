@@ -16,10 +16,14 @@ North America:
   question:     Which country of North America would you like to browse?
 United States:
   materials: 
-    - Founding documents
-    - Statutory law
-    - Administrative law
-    - Treaties
+    - label:  Founding documents
+      module: US::Constitution
+    - label:  Statutory law
+      module: US::Code
+    - label:  Administrative law
+      module: US::CFR
+    - label:  Treaties
+      module: US::Treaties
   subdivisions:
     - label:  Georgia
       id:     us_georgia
