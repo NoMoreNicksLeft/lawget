@@ -32,12 +32,15 @@ my $menu_config = LoadFile("menu.yaml");
 
 # Check for options. If none, assume interactive mode.
 
+############################## Command-line Mode ###############################
+
+############################### Interactive Mode ###############################
+
 # Let's give the user some sort of hello message.
 print "\nWelcome to lawget.\n\n";
 my $banner = "You can download statutory code, administrative code, law reporters, treaties, etc from a number of " .
              "sources. Type 'quit' (without quotes) at any time to exit.";
 print wrap('', '', $banner);
-
 
 # Sending them into the endless polling loop!
 while (my $module = menu('United States')) {
@@ -47,17 +50,42 @@ while (my $module = menu('United States')) {
     $module->configure($app_config);
 
     # We need to call the module's menu() method, and generate a menu from it.
-    my ($materials) = $module->menu();
+    # Should return parameters to run download() and compile() with.
+    my (@materials, $format) = $module->menu();
+
+    print @materials; exit;
+
+    # Some materials only download junk files, that are virtually useless
+    # until compiled. Others are usable as is.
+    my (@downloaded) = $module->download(@materials);
+
+    # Depending on the format desired, may need to do some work.
+    my @compiled;
+    my @ready_files;
+    if    ($format ne 'original') {
+        # Will need to be compiled to html, regardless of format.
+        (@compiled) = $module->download(@materials);
+        if    ($format eq 'html') {
+            # The ready files is an identical list to @compiled.
+            @ready_files = @compiled;
+        }
+        elsif ($format eq 'pdf') {
+            # Need to convert the html files to pdf. Enter wkhtmltopdf.
+
+        }
+    }
+    # If original files, no need to recompile. May or may not be on offer.
+    else {
+        @ready_files = @downloaded;
+    }
+
+    # Do they want to rename/move these files?
+
+
+
 }
+
 exit;
-
-
-
-
-#US::Texas::TAC::download('http://texreg.sos.state.tx.us/public/readtac$ext.viewtac', (1));
-US::Texas::TAC::download((1));
-US::Texas::TAC::compile((1));
-
 
 ################################################################################
 ################################# Subroutines ##################################

@@ -96,12 +96,18 @@ sub menu {
     my $materials = <> || 'all';
     # We need to process the answer into an array.
     chomp($materials);
+    my @materials_array;
+    if ($materials eq 'all') {
+        @materials_array = (keys %menu_list);
+    }
 
     print "\nAvilable formats are: pdf, html\n";
     print "Which document format would you like these converted to? [pdf] ";
 
     my $format = <> || 'pdf';
     chomp($format);
+
+    return (@materials_array, $format);
 
 }
 
@@ -197,12 +203,15 @@ sub download {
         # Let's finish up the progress bar, since we've exited the loop.
         $progress->update($size_estimate{$title_number});
     }
+
+    return (0);
 }
 
 sub compile {
     my (@titles) = @_;
 
     # We might be compiling more than one here.
+    my @finished_files;
     foreach my $title_number (@titles) {
         # Name of the html file we're going to create.
         my $work_in_progress;
@@ -246,6 +255,7 @@ sub compile {
                 if ($last_section_change) { 
                     print $fh "    </div>\n  </body>\n</html>";
                     close $fh;
+                    push @finished_files, $work_in_progress;
                 }
                 # Update this value so we can check next iteration.
                 $last_section_change = $last_headers{'section'};
@@ -264,7 +274,9 @@ sub compile {
         # Close up the (last) html.
         print $fh "    </div>\n  </body>\n</html>";
         close $fh;
+        push @finished_files, $work_in_progress;
     }
+    return @finished_files;
 }
 
 ################################################################################
