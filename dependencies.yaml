@@ -1,0 +1,9 @@
+modules:
+  - something
+executables:
+  - executable:   inkscape
+    download_url: https://something
+  - executable:   unrtf
+    download_url: x
+  - executable:   wkhtmltopdf
+    download_url: x
