@@ -10,6 +10,7 @@ use YAML qw'LoadFile';
 use Getopt::Long;
 use Text::Wrap;
 use Term::ReadKey;
+use Module::Load;
 use Data::Dumper;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
@@ -38,33 +39,23 @@ my $banner = "You can download statutory code, administrative code, law reporter
 print wrap('', '', $banner);
 
 
-# print "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16).\n" .
-#       "The titles numbers are not necessarily sequential due to various factors.\n\n";
-# print "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or any combination:\n";
-# print "Which title(s) would you like to download? [all] ";
+# Sending them into the endless polling loop!
+while (my $module = menu('United States')) {
+    # Load up the module. Should only load once, even if called many times.
+    load $module;
+    # Configure is running every time, not sure if that's bad or not.
+    $module->configure($app_config);
 
-
-# print "\nAvilable formats are: pdf, html\n";
-# print "What document format do you want the titles converted to? [pdf] ";
-eval {
-    require US::Texas::TAC;
-    US::Texas::TAC->configure($app_config);
-} ;
-if($@) { print "error or something"; }
-US::Texas::TAC::download((1));
-
-my $module = menu('United States');
-print "this is the module $module\n";
+    # We need to call the module's menu() method, and generate a menu from it.
+    my ($materials) = $module->menu();
+}
 exit;
-
-#menu_world();
-
 
 
 
 
 #US::Texas::TAC::download('http://texreg.sos.state.tx.us/public/readtac$ext.viewtac', (1));
-
+US::Texas::TAC::download((1));
 US::Texas::TAC::compile((1));
 
 
@@ -134,26 +125,6 @@ sub menu {
     elsif (exists $options{$selection}->{'id'})   { menu($options{$selection}->{'id'}); }
     elsif (exists $options{$selection}->{'name'}) { return $options{$selection}->{'name'}; }
     else { ; }
-    # elsif 
-    #print Dumper($menu);
-
-}
-
-
-sub menu_state_of_texas_admin_law {
-
-    print "\n"; 
-    print "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16).\n" .
-          "The titles numbers are not necessarily sequential due to various factors.\n\n";
-    print "You may answer with a comma-separated list of numbers, a range (1-9), or both:\n";          
-    print "Which title(s) would you like to download? []";
-
-    my $selection = <>;
-    chomp($selection);
-
-    # Let's see what they chose.
-    if    ($selection == 1)      { }
-    elsif ($selection == 2)      { }
 
 }
 
