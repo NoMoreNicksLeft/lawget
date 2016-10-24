@@ -6,7 +6,7 @@ use open ":encoding(utf8)";
 
 our $VERSION = 0.01;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(download compile);
+our @EXPORT_OK = qw(menu);
 
 ################################################################################
 ################################# Dependencies #################################
