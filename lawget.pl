@@ -53,7 +53,7 @@ while (my $module = menu('United States')) {
     # Should return parameters to run download() and compile() with.
     my (@materials, $format) = $module->menu();
 
-    print @materials; exit;
+    # Do they want to rename/move these files?
 
     # Some materials only download junk files, that are virtually useless
     # until compiled. Others are usable as is.
@@ -78,9 +78,6 @@ while (my $module = menu('United States')) {
     else {
         @ready_files = @downloaded;
     }
-
-    # Do they want to rename/move these files?
-
 
 
 }
