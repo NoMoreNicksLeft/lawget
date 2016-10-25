@@ -126,6 +126,7 @@ sub menu {
         }
         # Deduplicate the array.
         @materials_array = uniq(@materials_array);
+        @materials_array = grep /\S/, @materials_array;
 
         # Now exit the loop.
         last;
