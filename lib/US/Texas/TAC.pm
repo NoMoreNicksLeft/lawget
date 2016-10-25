@@ -106,8 +106,8 @@ sub menu {
         # Process the answer into an array of integers.
         my @answer = split(/,/, $materials);
         foreach my $answerpart (@answer) {
-            chomp($answerpart);
-            if ($answerpart !~ m/^(all|\d+|\d+ ?- ?\d+)$/) {
+            $answerpart =~ s/\s//g;
+            if ($answerpart !~ m/^(all|\d+|\d+-\d+)$/) {
                 print "ERROR:  That option ($answerpart) is unavailable.\n";
                 # Part of the answer is wrong, somehow. This iteration needs
                 # to end immediately, but we need another to ask again.
@@ -120,7 +120,7 @@ sub menu {
             elsif ($answerpart =~ m/^\d+$/) {
                 push @materials_array, $answerpart;
             }
-            elsif ($answerpart =~ m/^(\d+) ?- ?(\d+)$/) {
+            elsif ($answerpart =~ m/^(\d+)-(\d+)$/) {
                 push @materials_array, $1 .. $2;
             }
         }
