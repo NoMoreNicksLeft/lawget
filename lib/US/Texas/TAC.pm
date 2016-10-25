@@ -163,7 +163,7 @@ sub download {
     my $mech = WWW::Mechanize->new();
 
     # Now we'll loop through each title...
-    foreach my $title_number (keys %$title_data) {
+    foreach my $title_number (sort {$a <=> $b} keys %$title_data) {
         # We need to prepare a directory to store the html files. 
         File::Path::make_path("$build_root/$title_number");
         # And one for supplementary documents.
