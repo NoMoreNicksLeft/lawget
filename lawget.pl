@@ -43,7 +43,7 @@ my $banner = "You can download statutory code, administrative code, law reporter
 print wrap('', '', $banner);
 
 # Sending them into the endless polling loop!
-while (my $module = menu('United States')) {
+while (my $module = menu('Texas')) {
     # Load up the module. Should only load once, even if called many times.
     load $module;
     # Configure is running every time, not sure if that's bad or not.
@@ -53,7 +53,7 @@ while (my $module = menu('United States')) {
     # Should return parameters to run download() and compile() with.
     my (@materials, $format) = $module->menu();
 
-    # Do they want to rename/move these files?
+    # Want to rename/move these files? Ask before starting long process.
 
     # Some materials only download junk files, that are virtually useless
     # until compiled. Others are usable as is.
