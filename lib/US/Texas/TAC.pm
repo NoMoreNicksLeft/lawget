@@ -20,6 +20,8 @@ use File::Slurp;
 use Lingua::EN::Titlecase;
 use HTML::Manipulator::Document;
 use Text::Wrap;
+use List::MoreUtils qw(uniq);
+use Data::Dumper;
 
 ################################################################################
 ################################### Globals ####################################
@@ -91,24 +93,62 @@ sub menu {
     foreach my $option (sort {$a <=> $b} keys %menu_list) {
         print "  [$option] " . (" " x ($option_width - length($option))) . $menu_list{$option} . "\n";
     }
-    print "Which title(s) would you like to download? [all] ";
-
-    my $materials = <> || 'all';
-    # We need to process the answer into an array.
-    chomp($materials);
+    
+    # First question.
     my @materials_array;
-    if ($materials eq 'all') {
-        @materials_array = (keys %menu_list);
+    MATERIALS_LOOP: while(1) {
+        print "Which title(s) would you like to download? [all] ";
+
+        my $materials;
+        chomp($materials = <>);
+        $materials = $materials || 'all';
+
+        # Process the answer into an array of integers.
+        my @answer = split(/,/, $materials);
+        foreach my $answerpart (@answer) {
+            chomp($answerpart);
+            if ($answerpart !~ m/^(all|\d+|\d+ ?- ?\d+)$/) {
+                print "ERROR:  That option ($answerpart) is unavailable.\n";
+                # Part of the answer is wrong, somehow. This iteration needs
+                # to end immediately, but we need another to ask again.
+                undef(@materials_array);
+                next MATERIALS_LOOP;
+            }
+            elsif ($answerpart eq 'all') {
+                @materials_array = (keys %menu_list);
+            }
+            elsif ($answerpart =~ m/^\d+$/) {
+                push @materials_array, $answerpart;
+            }
+            elsif ($answerpart =~ m/^(\d+) ?- ?(\d+)$/) {
+                push @materials_array, $1 .. $2;
+            }
+        }
+        # Deduplicate the array.
+        @materials_array = uniq(@materials_array);
+
+        # Now exit the loop.
+        last;
     }
 
-    print "\nAvilable formats are: pdf, html\n";
-    print "Which document format would you like these converted to? [pdf] ";
+    # Second question.
+    my $format;
+    # Need to test the same inside the loop, no reason to test here... 
+    # Will just use last;
+    while(1) {
+        print "\nAvilable formats are: pdf, html\n";
+        print "Which document format would you like these converted to? [pdf] ";
 
-    my $format = <> || 'pdf';
-    chomp($format);
+        my $format;
+        chomp($format = <>);
+        $format = $format || 'pdf';
+        if ($format !~ m/^(pdf|html)$/) {
+            print "ERROR:  That option ($format) is unavailable.\n";
+        }
+        else { last; }
+    }
 
     return (@materials_array, $format);
-
 }
 
 sub download {
