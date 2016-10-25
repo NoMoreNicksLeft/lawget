@@ -339,6 +339,9 @@ sub get_title_urls {
         my $title_link = $1;
         my $title_number = $2;
 
+         # Is this title one we actually want to get?
+        if (!($title_number ~~ @titles)) { next; }
+
         # The Title page.
         $mech->get($title_link);
         # The Part page.
