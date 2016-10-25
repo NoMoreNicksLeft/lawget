@@ -305,10 +305,16 @@ sub get_title_urls {
         $mech->follow_link(text_regex => qr/^PART \d+/);
         # The Chapter page.
         $mech->follow_link(text_regex => qr/^CHAPTER \d+/);
-        # The Subchapter page.
-        $mech->follow_link(text_regex => qr/^SUBCHAPTER/);
+        # The Subchapter page. May or may not exist.
+        if ($mech->find_link(text_regex => qr/^SUBCHAPTER/)) {
+            $mech->follow_link(text_regex => qr/^SUBCHAPTER/);
+        }
+        # There may or may not be a division pge.
+        if ($mech->find_link(text_regex => qr/^DIVISION \d+/)) {
+            $mech->follow_link(text_regex => qr/^DIVISION \d+/);
+        }
         # The first rule page, we need to push this onto the array/hash.
-        my $rule = $mech->find_link(name_regex => qr/^\xa7/);
+        my $rule = $mech->find_link(url_regex => qr/rl=\d+$/);
 
         $title_data{$title_number} = $rule->url_abs();
     }
