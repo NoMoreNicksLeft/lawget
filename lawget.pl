@@ -64,7 +64,7 @@ while (my $module = menu('Texas')) {
 
     # Some materials only download junk files, that are virtually useless
     # until compiled. Others are usable as is.
-    my (@downloaded) = $module->download(@materials);
+    my (@downloaded) = $module->download($destination, $rename, @materials);
 
     # Depending on the format desired, may need to do some work.
     my @compiled;

@@ -117,7 +117,7 @@ sub menu {
 
 sub download {
     # We have a few arguments for this.
-    my ($package, @titles) = @_;
+    my ($package, $destination, $rename, @titles) = @_;
 
     my $scotus_url = $config->{'north america'}->{'us'}->{'supreme court'}->{'origin'};
 
