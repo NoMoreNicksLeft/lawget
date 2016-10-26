@@ -98,7 +98,6 @@ sub menu {
         print "Which title(s) would you like to download? [all] ";
 
         my $materials;
-        chomp($materials = <>);
         $materials = $materials || 'all';
 
         # Process the answer into an array of integers.
