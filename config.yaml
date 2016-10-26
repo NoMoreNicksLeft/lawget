@@ -1,5 +1,7 @@
 north america:
   us:
+    supreme court:  
+      origin:       "https://www.supremecourt.gov/opinions/boundvolumes.aspx"
     texas:
       tac:
         origin:     "http://texreg.sos.state.tx.us/public/readtac$ext.viewtac"

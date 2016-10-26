@@ -22,6 +22,8 @@ United States:
       module: US::Code
     - label:  Administrative law
       module: US::CFR
+    - label:  United States Reports (SCOTUS decisions, opinions, proceedings)
+      module: US::SupremeCourt
     - label:  Treaties
       module: US::Treaties
   subdivisions:
