@@ -155,10 +155,10 @@ sub menu {
     my $selection = <>;
     chomp($selection);
 
-    if    ($selection ~~ ["quit", "q", "exit"])   { exit; }
-    elsif ($selection ~~ ["top", "start"])        { menu("World"); }
-    elsif (exists $options{$selection}->{'id'})   { menu($options{$selection}->{'id'}); }
-    elsif (exists $options{$selection}->{'name'}) { return $options{$selection}->{'name'}; }
+    if    ($selection =~ m/^\s*(quit|q|exit)\s*$/) { exit; }
+    elsif ($selection =~ m/^\s*(top|start)\s*$/)   { menu("World"); }
+    elsif (exists $options{$selection}->{'id'})    { menu($options{$selection}->{'id'}); }
+    elsif (exists $options{$selection}->{'name'})  { return $options{$selection}->{'name'}; }
     else { ; }
 
 }
