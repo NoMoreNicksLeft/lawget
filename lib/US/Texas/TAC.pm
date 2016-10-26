@@ -78,8 +78,7 @@ sub menu {
     }
 
     print "\n"; 
-    print wrap('', '', "The Texas Administrative Code comprises multiple titles (16 as of Oct 18, '16). " .
-          "The titles numbers are not necessarily sequential due to various factors.\n");
+    print wrap('', '', "The Texas Administrative Code comprises multiple titles. ");
     print "\n"; 
     print wrap('', '', "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or both:\n");          
 
@@ -107,7 +106,7 @@ sub menu {
         foreach my $answerpart (@answer) {
             $answerpart =~ s/\s//g;
             if ($answerpart !~ m/^(all|\d+|\d+-\d+)$/) {
-                print "ERROR:  That option ($answerpart) is unavailable.\n";
+                print "ERROR:   That option ($answerpart) is unavailable.\n";
                 # Part of the answer is wrong, somehow. This iteration needs
                 # to end immediately, but we need another to ask again.
                 undef(@materials_array);
@@ -143,7 +142,7 @@ sub menu {
         chomp($format = <>);
         $format = $format || 'pdf';
         if ($format !~ m/^(pdf|html)$/) {
-            print "ERROR:  That option ($format) is unavailable.\n";
+            print "ERROR:   That option ($format) is unavailable.\n";
         }
         else { last; }
     }
