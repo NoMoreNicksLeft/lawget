@@ -53,8 +53,8 @@ while (my $module = menu('Texas')) {
 
     # We need to call the module's menu() method, and generate a menu from it.
     # Should return parameters to run download() and compile() with.
-    my (@materials, $format) = $module->menu();
-
+    my ($format, @materials) = $module->menu();
+    
     # Want to rename/move these files? Ask before starting long process.
     print "\nWhere should the materials be saved? [] ";
     my $destination = <>;

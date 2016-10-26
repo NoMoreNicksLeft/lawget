@@ -154,7 +154,7 @@ sub menu {
 
 sub download {
     # We have a few arguments for this.
-    my (@titles) = @_;
+    my ($package, @titles) = @_;
 
     my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
 
@@ -249,7 +249,7 @@ sub download {
 }
 
 sub compile {
-    my (@titles) = @_;
+    my ($package, @titles) = @_;
 
     # We might be compiling more than one here.
     my @finished_files;
