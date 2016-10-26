@@ -59,7 +59,6 @@ sub configure {
 }
 
 sub menu {
-    #my (@titles) = @_;
 
     my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
 
