@@ -5,6 +5,7 @@ use warnings;
 # Our includes.
 use WWW::Mechanize;
 use File::Path;
+use File::Copy;
 use Config::JSON;
 use YAML qw'LoadFile';
 use Getopt::Long;
@@ -37,6 +38,7 @@ my $menu_config = LoadFile("menu.yaml");
 ############################### Interactive Mode ###############################
 
 # Let's give the user some sort of hello message.
+system("clear");
 print "\nWelcome to lawget.\n\n";
 my $banner = "You can download statutory code, administrative code, law reporters, treaties, etc from a number of " .
              "sources. Type 'quit' (without quotes) at any time to exit.";
@@ -54,6 +56,11 @@ while (my $module = menu('Texas')) {
     my (@materials, $format) = $module->menu();
 
     # Want to rename/move these files? Ask before starting long process.
+    print "\nWhere should the materials be saved? [] ";
+    my $destination = <>;
+
+    print "\nDo you want to rename the materials? [] ";
+    my $rename = <>;
 
     # Some materials only download junk files, that are virtually useless
     # until compiled. Others are usable as is.
@@ -79,6 +86,9 @@ while (my $module = menu('Texas')) {
         @ready_files = @downloaded;
     }
 
+    # Move the files to the requested destination.
+    #File::Path::make_path($destination);
+    #move("","$destination/");
 
 }
 
