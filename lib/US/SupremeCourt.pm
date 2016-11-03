@@ -123,6 +123,11 @@ sub download {
 
     my $title_data = get_title_urls($scotus_url, @titles);
 
+    # If $destination is empty, let's use $build_root, otherwise...
+    if (!$destination) { $destination = $build_root; }
+    # We need to prepare a directory to store the html files. 
+    File::Path::make_path("$build_root");
+
     # We need a robot.
     my $mech = WWW::Mechanize->new();
 
@@ -135,14 +140,24 @@ sub download {
     # Now we'll loop through each title...
     my $z = 1;
     foreach my $title_number (sort {$a <=> $b} keys %$title_data) {
-        # We need to prepare a directory to store the html files. 
-        File::Path::make_path("$build_root");
+        my $fn;
 
-        # Grab the initial page.
         my $title_url = $$title_data{$title_number};
-        $mech->get($title_url);
-        my ($fn) = $title_url =~ /.+\/(.+)$/;
-        $mech->save_content("$build_root/$fn", binmode => ':raw');
+        # Do we have our own name for this?
+        if ($rename) {
+            $fn = eval "sprintf($rename)";
+        }
+        # Let's see what they think the filename should be.
+        else {
+            ($fn) = $title_url =~ /.+\/(.+)$/;
+        }
+
+        # Is the file not already present?
+        if (! -f "$destination/$fn") {
+            # Get the file.
+            $mech->get($title_url);
+            $mech->save_content("$destination/$fn", binmode => ':raw');
+        }
 
         # Let's finish up the progress bar, since we've exited the loop.
         $progress->update($z);

@@ -58,6 +58,8 @@ while (my $module = menu('United States')) {
     # Want to rename/move these files? Ask before starting long process.
     print "\nWhere should the materials be saved? [] ";
     my $destination = <>;
+    chomp($destination);
+    File::Path::make_path($destination);
 
     print "\nDo you want to rename the materials? [] ";
     my $rename = <>;
