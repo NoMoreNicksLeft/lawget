@@ -77,7 +77,7 @@ sub menu {
 
         my $materials;
         chomp($materials = <>);
-        $materials = $materials || 'all';
+        $materials ||= 'all';
 
         # Process the answer into an array of integers.
         my @answer = split(/,/, $materials);
