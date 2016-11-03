@@ -44,6 +44,10 @@ sub configure {
     $config = $z;
 }
 
+sub you_are_here {
+    return ('north america', 'us', 'supreme court');
+}
+
 sub menu {
     my $scotus_url = $config->{'north america'}->{'us'}->{'supreme court'}->{'origin'};
 

@@ -12,6 +12,7 @@ use Getopt::Long;
 use Text::Wrap;
 use Term::ReadKey;
 use Module::Load;
+use Data::Diver qw'Dive';
 use Data::Dumper;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
@@ -56,13 +57,21 @@ while (my $module = menu('United States')) {
     my ($format, @materials) = $module->menu();
     
     # Want to rename/move these files? Ask before starting long process.
-    print "\nWhere should the materials be saved? [] ";
-    my $destination = <>;
-    chomp($destination);
+    my $default_destination = Dive($app_config, ($module->you_are_here, 'default_destination')) || "";
+    print "\nWhere should the materials be saved? [$default_destination] ";
+    my $destination;
+    chomp($destination = <>);
+    $destination ||= $default_destination;
     File::Path::make_path($destination);
+    # Check here that it can actually be created, if not, ask again.
 
-    print "\nDo you want to rename the materials? [] ";
-    my $rename = <>;
+    my $default_rename = Dive($app_config, ($module->you_are_here, 'default_rename')) || "";
+    print "\nDo you want to rename the materials? [$default_rename] ";
+    my $rename;
+    chomp($rename = <>);
+    $rename ||= $default_rename;
+    # Is there any way to check that their sprintf expression is good? If we wait, we can't warn,
+    # will just have to fail out.
 
     # Some materials only download junk files, that are virtually useless
     # until compiled. Others are usable as is.
