@@ -150,17 +150,18 @@ sub download {
 
     # Now we'll loop through each title...
     my $z = 1;
-    foreach my $title_number (sort {$a <=> $b} keys %$title_data) {
-        my $fn;
+    foreach my $volume_number (sort {$a <=> $b} keys %$title_data) {
 
-        my $title_url = $$title_data{$title_number};
+        my $title_url = $$title_data{$volume_number};
+        my ($original_filename) = $title_url =~ /.+\/(.+)$/;
+        my $fn = " ";
         # Do we have our own name for this?
         if ($rename) {
             $fn = eval "sprintf($rename)";
         }
         # Let's see what they think the filename should be.
         else {
-            ($fn) = $title_url =~ /.+\/(.+)$/;
+            $fn = $original_filename;
         }
 
         # Is the file not already present?
@@ -169,6 +170,7 @@ sub download {
             $mech->get($title_url);
             $mech->save_content("$destination/$fn", binmode => ':raw');
         }
+        # Is an earlier version present?
 
         # Let's finish up the progress bar, since we've exited the loop.
         $progress->update($z);
