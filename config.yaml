@@ -1,15 +1,18 @@
+---
+binpath:
+  linux:
+    inkscape: ''
+  osx:
+    inkscape: /Applications/Inkscape.app/Contents/Resources/bin/inkscape
+  win64:
+    inkscape: ''
 north america:
   us:
-    supreme court:  
-      origin:       "https://www.supremecourt.gov/opinions/boundvolumes.aspx"
+    supreme court:
+      default_destination: 'mnt/Linkstation/Literature/3xx - Social Sciences/344 - Common law, primary materials/73 - United States/072 - Law Reports (modern)'
+      default_rename: '"%s",$original_filename'
+      origin: https://www.supremecourt.gov/opinions/boundvolumes.aspx
     texas:
       tac:
-        origin:     "http://texreg.sos.state.tx.us/public/readtac$ext.viewtac"
-        title_size:
-binpath:
-  osx:
-    inkscape: "/Applications/Inkscape.app/Contents/Resources/bin/inkscape"
-  win64:
-    inkscape: ""
-  linux:
-    inkscape: ""
+        origin: http://texreg.sos.state.tx.us/public/readtac$ext.viewtac
+        title_size: ~

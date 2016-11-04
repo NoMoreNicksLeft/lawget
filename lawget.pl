@@ -7,12 +7,12 @@ use WWW::Mechanize;
 use File::Path;
 use File::Copy;
 use Config::JSON;
-use YAML qw'LoadFile';
+use YAML qw'LoadFile DumpFile';
 use Getopt::Long;
 use Text::Wrap;
 use Term::ReadKey;
 use Module::Load;
-use Data::Diver qw'Dive';
+use Data::Diver qw'DiveRef';
 use Data::Dumper;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
@@ -57,21 +57,30 @@ while (my $module = menu('United States')) {
     my ($format, @materials) = $module->menu();
     
     # Want to rename/move these files? Ask before starting long process.
-    my $default_destination = Dive($app_config, ($module->you_are_here, 'default_destination')) || "";
-    print "\nWhere should the materials be saved? [$default_destination] ";
+    my $default_destination = DiveRef($app_config, ($module->you_are_here, 'default_destination')) || "";
+    print "\nWhere should the materials be saved? [$$default_destination] ";
     my $destination;
     chomp($destination = <>);
-    $destination ||= $default_destination;
+    $destination ||= $$default_destination;
     File::Path::make_path($destination);
     # Check here that it can actually be created, if not, ask again.
 
-    my $default_rename = Dive($app_config, ($module->you_are_here, 'default_rename')) || "";
-    print "\nDo you want to rename the materials? [$default_rename] ";
+    # Make this the new default.
+    $$default_destination = $destination;
+
+    my $default_rename = DiveRef($app_config, ($module->you_are_here, 'default_rename')) || "";
+    print "\nDo you want to rename the materials? [$$default_rename] ";
     my $rename;
     chomp($rename = <>);
-    $rename ||= $default_rename;
+    $rename ||= $$default_rename;
     # Is there any way to check that their sprintf expression is good? If we wait, we can't warn,
     # will just have to fail out.
+
+    # Make this the new default.
+    $$default_rename = $rename;
+
+    # Let's write out the configs with new defaults.
+    DumpFile("config.yaml", $app_config);
 
     # Some materials only download junk files, that are virtually useless
     # until compiled. Others are usable as is.
@@ -96,10 +105,6 @@ while (my $module = menu('United States')) {
     else {
         @ready_files = @downloaded;
     }
-
-    # Move the files to the requested destination.
-    #File::Path::make_path($destination);
-    #move("","$destination/");
 
 }
 
