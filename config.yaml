@@ -16,3 +16,6 @@ north america:
       tac:
         origin: http://texreg.sos.state.tx.us/public/readtac$ext.viewtac
         title_size: ~
+legal publisher:
+  franklin legal:
+    origin: http://www.franklinlegal.net/search-codes
