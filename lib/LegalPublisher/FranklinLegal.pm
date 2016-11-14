@@ -28,7 +28,7 @@ use Data::Dumper;
 ################################################################################
 
 our $config;
-our @city_list;
+our $subdivisions_tripwire = 0;
 our %subdivision_menu;
 my %menu_list = ('empty' => 'true');
 my $build_root = "build/us/texas/tac";
@@ -63,6 +63,9 @@ sub configure {
 sub subdivisions {
     my ($package, $filter, $menu_config) = @_;
 
+    # No need to run this a second time.
+    if ($subdivisions_tripwire) { return 0; }
+
     my $subdivisions_url = $config->{'legal publisher'}->{'franklin legal'}->{'origin'};
 
     # We need a robot.
@@ -76,7 +79,8 @@ sub subdivisions {
         # There are some garbage options in the list, we just need to skip if we find those.
         if ($subdivision_name =~ m/^(Select here|All codes|Texas Municipal Law)/) { next; }
 
-        # Most of these are Texas, a few aren't.
+        # Most of these are Texas, a few aren't. We'll load them all anyway. If someone
+        # skips through and then does Oklahoma, no reason to run this a second time.
         $subdivision_name =~ m/^(.+?)(, [A-Z]{2})?$/;
         my $municipality = Lingua::EN::Titlecase->new($1)->title;
         my $state = $2 || 'TX'; $state = lc(substr $state, -2);
@@ -87,11 +91,15 @@ sub subdivisions {
         if (!exists $$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'}) {
             $$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'} = [];
         }
-        push($$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'}, {'label' => $municipality, 'id' => "us_${state}_" . lc($mid) });
-
+        # Let's check to see if it's already in there.
+        if (!grep {$_->{'label'} eq $municipality} @{$$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'}}) {
+            push($$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'}, {'label' => $municipality, 'id' => "us_${state}_" . lc($mid) });
+            $$menu_config->{"us_${state}_" . lc($mid)} = "";
+        }
     }
 
-    return(1);
+    # Set the tripwire, so we can skip this if called again.
+    $subdivisions_tripwire++;
 }
 
 ################################################################################
