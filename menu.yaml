@@ -16,19 +16,19 @@ North America:
   question:     Which country of North America would you like to browse?
 United States:
   materials: 
-    - label:  Founding documents
-      module: US::Constitution
-    - label:  Statutory law
-      module: US::Code
-    - label:  Administrative law
-      module: US::CFR
-    - label:  United States Reports (SCOTUS decisions, opinions, proceedings)
-      module: US::SupremeCourt
-    - label:  Treaties
-      module: US::Treaties
+    - label:    Founding documents
+      module:   US::Constitution
+    - label:    Statutory law
+      module:   US::Code
+    - label:    Administrative law
+      module:   US::CFR
+    - label:    United States Reports (SCOTUS decisions, opinions, proceedings)
+      module:   US::SupremeCourt
+    - label:    Treaties
+      module:   US::Treaties
   subdivisions:
-    - label:  Georgia
-      id:     us_georgia
+    - label:    Georgia
+      id:       us_georgia
     - New Mexico
     - Oklahoma
     - Texas
@@ -38,15 +38,15 @@ United States:
   question:     Which option would you like to browse?
 Texas:
   materials:
-    - label:  Founding documents
-      module: US::Texas::Constitution
-    - label:  Statutory law
-      module: US::Texas::Statutes
-    - label:  Administrative law
-      module: US::Texas::TAC
+    - label:    Founding documents
+      module:   US::Texas::Constitution
+    - label:    Statutory law
+      module:   US::Texas::Statutes
+    - label:    Administrative law
+      module:   US::Texas::TAC
   subdivisions:
-    - label: City of Lubbock
-      id:    us_tx_lubbock
+    - label:    Cities, counties, etc.
+      id:       us_tx_subdivisions
   m-heading:    The following materials are available for Texas:
   s-heading:    Additionally, materials are available for the following subdivisions:
   s-start:      100
