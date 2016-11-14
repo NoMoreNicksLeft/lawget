@@ -55,7 +55,7 @@ us_tx_subdivisions:
   dynamic:
     - LegalPublisher::FranklinLegal
     # - LegalPublisher::Municode
-    # - LegalPublisher::AmericanLegal
+    - LegalPublisher::AmericanLegal
   argument:     TX
   s-heading:    "Texas subdivisions, organized alphabetically:"
   question:     What letter does the municipality or county start with?

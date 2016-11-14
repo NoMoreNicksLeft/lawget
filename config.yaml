@@ -19,3 +19,7 @@ north america:
 legal publisher:
   franklin legal:
     origin: http://www.franklinlegal.net/search-codes
+  american legal:
+    origin: http://www.amlegal.com/code-library/
+  municode:
+    origin: https://www.municode.com/library/
