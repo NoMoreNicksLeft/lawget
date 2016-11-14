@@ -48,6 +48,14 @@ Texas:
     - label:    Cities, counties, etc.
       id:       us_tx_subdivisions
   m-heading:    The following materials are available for Texas:
-  s-heading:    Additionally, materials are available for the following subdivisions:
-  s-start:      100
+  s-heading:    Additionally, materials are available for variou Texas subdivisions (over 100):
+  s-start:      9
   question:     Which option would you like to browse?
+us_tx_subdivisions:
+  dynamic:
+    - LegalPublisher::FranklinLegal
+    # - LegalPublisher::Municode
+    # - LegalPublisher::AmericanLegal
+  argument:     TX
+  s-heading:    "Texas subdivisions, organized alphabetically:"
+  question:     What letter does the municipality or county start with?
