@@ -34,6 +34,7 @@ my $app_config = LoadFile("config.yaml");
 my $menu_config = LoadFile("menu.yaml");
 
 # Check for options. If none, assume interactive mode.
+if (@ARGV > 0) { print "got arguments\n"; exit; }
 
 ############################## Command-line Mode ###############################
 
