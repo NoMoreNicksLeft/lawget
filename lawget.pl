@@ -13,6 +13,7 @@ use Text::Wrap;
 use Term::ReadKey;
 use Module::Load;
 use Data::Diver qw'DiveRef';
+use List::MoreUtils qw(uniq);
 use Data::Dumper;
 
 # We have some custom modules for this project that don't really belong on CPAN or in the standard locations.
@@ -115,7 +116,7 @@ exit;
 ################################################################################
 
 sub menu {
-    my ($menu_name) = @_;
+    my ($menu_name, $start_letter) = @_;
 
     # Let's make sure this is always passed a menu name.
     if (!exists $menu_config->{$menu_name}) {
@@ -146,21 +147,75 @@ sub menu {
     }
     # We need to print the s-heading if it exists.
     print $menu->{'s-heading'} . "\n" if exists $menu->{'s-heading'};
-    # The materials menus...
-    $a = $menu->{'s-start'} if exists $menu->{'s-start'};
-    foreach my $subdivision (@{$menu->{'subdivisions'}}) {
-        # Sometimes we have to have this value be a hash instead of scalar...
-        if (ref($subdivision) eq "HASH") { 
-            $options{$a}{'type'} = 'menu';
-            $options{$a}{'id'} = $subdivision->{'id'};
-            print "  [$a] " . $subdivision->{'label'} . "\n";
+
+    # Sometimes the list of subdivisions available can be determined dynamically.
+    my $module_argument = "";
+    $module_argument = $menu->{'argument'} if exists $menu->{'argument'};
+    foreach my $module (@{$menu->{'dynamic'}}) {
+        load $module;
+        $module->configure($app_config);
+        $module->subdivisions($module_argument, \$menu_config);
+    }
+
+    # If there are more than n subdivisions, we'll want to make this a little
+    # easier to browse.
+    if (scalar @{$menu->{'subdivisions'}} > 55 && !$start_letter) {
+        #print "the length is ", scalar @{$menu->{'subdivisions'}}, "\n";
+        my @alphabet;
+        foreach my $label (@{$menu->{'subdivisions'}}) {
+            if (ref($label) eq "HASH") { 
+                push(@alphabet, substr($label->{'label'}, 0, 1));
+            }
+            else {
+                push(@alphabet, substr($label, 0, 1));
+            }
         }
-        else {
-            $options{$a}{'type'} = 'menu';
-            $options{$a}{'id'} = $subdivision;
-            print "  [$a] $subdivision\n";
+        @alphabet = uniq(@alphabet);
+        $a = 10;
+        foreach my $letter (@alphabet) {
+            $options{$a}{'type'} = 'letter';
+            $options{$a}{'id'} = $letter;
+            print "  [$a] $letter\n";
+            $a++;
         }
-        $a++;
+    }
+    elsif (scalar @{$menu->{'subdivisions'}} > 55 && $start_letter) {
+        # The subdivision menus...
+        $a = 10;
+        my @slice = grep { substr($_->{'label'}, 0, 1) eq $start_letter } @{$menu->{'subdivisions'}};
+
+        foreach my $subdivision (@slice) {
+            # Sometimes we have to have this value be a hash instead of scalar...
+            if (ref($subdivision) eq "HASH") { 
+                $options{$a}{'type'} = 'menu';
+                $options{$a}{'id'} = $subdivision->{'id'};
+                print "  [$a] " . $subdivision->{'label'} . "\n";
+            }
+            else {
+                $options{$a}{'type'} = 'menu';
+                $options{$a}{'id'} = $subdivision;
+                print "  [$a] $subdivision\n";
+            }
+            $a++;
+        }
+    }
+    else {
+        # The subdivision menus...
+        $a = $menu->{'s-start'} if exists $menu->{'s-start'};
+        foreach my $subdivision (@{$menu->{'subdivisions'}}) {
+            # Sometimes we have to have this value be a hash instead of scalar...
+            if (ref($subdivision) eq "HASH") { 
+                $options{$a}{'type'} = 'menu';
+                $options{$a}{'id'} = $subdivision->{'id'};
+                print "  [$a] " . $subdivision->{'label'} . "\n";
+            }
+            else {
+                $options{$a}{'type'} = 'menu';
+                $options{$a}{'id'} = $subdivision;
+                print "  [$a] $subdivision\n";
+            }
+            $a++;
+        }
     }
 
     # We'll follow up with a question.
@@ -171,10 +226,11 @@ sub menu {
     my $selection = <>;
     chomp($selection);
 
-    if    ($selection =~ m/^\s*(quit|q|exit)\s*$/) { exit; }
-    elsif ($selection =~ m/^\s*(top|start)\s*$/)   { menu("World"); }
-    elsif (exists $options{$selection}->{'id'})    { menu($options{$selection}->{'id'}); }
-    elsif (exists $options{$selection}->{'name'})  { return $options{$selection}->{'name'}; }
+    if    ($selection =~ m/^\s*(quit|q|exit)\s*$/)   { exit; }
+    elsif ($selection =~ m/^\s*(top|start)\s*$/)     { menu("World"); }
+    elsif ($options{$selection}{'type'} eq 'letter') { menu($menu_name, $options{$selection}->{'id'}); }
+    elsif (exists $options{$selection}->{'id'})      { menu($options{$selection}->{'id'}); }
+    elsif (exists $options{$selection}->{'name'})    { return $options{$selection}->{'name'}; }
     else { ; }
 
 }
