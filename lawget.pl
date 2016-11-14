@@ -137,14 +137,14 @@ sub menu {
     # We need to print the m-heading if it exists (might not early in the tree).
     print $menu->{'m-heading'} . "\n" if exists $menu->{'m-heading'};
     # The materials menus...
-    my $a = 1;
+    my $i = 1;
     foreach my $material (@{$menu->{'materials'}}) {
         if (ref($material) eq "HASH") {
-            $options{$a}{'type'} = 'module';
-            $options{$a}{'name'} = $material->{'module'};
-            print "  [$a] " . $material->{'label'} . "\n"; 
+            $options{$i}{'type'} = 'module';
+            $options{$i}{'name'} = $material->{'module'};
+            print "  [$i] " . $material->{'label'} . "\n"; 
         }
-        $a++;
+        $i++;
     }
     # We need to print the s-heading if it exists.
     print $menu->{'s-heading'} . "\n" if exists $menu->{'s-heading'};
@@ -172,50 +172,51 @@ sub menu {
             }
         }
         @alphabet = uniq(@alphabet);
-        $a = 10;
+        $i = 10;
         foreach my $letter (@alphabet) {
-            $options{$a}{'type'} = 'letter';
-            $options{$a}{'id'} = $letter;
-            print "  [$a] $letter\n";
-            $a++;
+            $options{$i}{'type'} = 'letter';
+            $options{$i}{'id'} = $letter;
+            print "  [$i] $letter\n";
+            $i++;
         }
     }
     elsif (scalar @{$menu->{'subdivisions'}} > 55 && $start_letter) {
         # The subdivision menus...
-        $a = 10;
+        $i = 10;
         my @slice = grep { substr($_->{'label'}, 0, 1) eq $start_letter } @{$menu->{'subdivisions'}};
+        my @sorted_slice = sort {$a->{'label'} cmp $b->{'label'}} @slice;
 
-        foreach my $subdivision (@slice) {
+        foreach my $subdivision (@sorted_slice) {
             # Sometimes we have to have this value be a hash instead of scalar...
             if (ref($subdivision) eq "HASH") { 
-                $options{$a}{'type'} = 'menu';
-                $options{$a}{'id'} = $subdivision->{'id'};
-                print "  [$a] " . $subdivision->{'label'} . "\n";
+                $options{$i}{'type'} = 'menu';
+                $options{$i}{'id'} = $subdivision->{'id'};
+                print "  [$i] " . $subdivision->{'label'} . "\n";
             }
             else {
-                $options{$a}{'type'} = 'menu';
-                $options{$a}{'id'} = $subdivision;
-                print "  [$a] $subdivision\n";
+                $options{$i}{'type'} = 'menu';
+                $options{$i}{'id'} = $subdivision;
+                print "  [$i] $subdivision\n";
             }
-            $a++;
+            $i++;
         }
     }
     else {
         # The subdivision menus...
-        $a = $menu->{'s-start'} if exists $menu->{'s-start'};
+        $i = $menu->{'s-start'} if exists $menu->{'s-start'};
         foreach my $subdivision (@{$menu->{'subdivisions'}}) {
             # Sometimes we have to have this value be a hash instead of scalar...
             if (ref($subdivision) eq "HASH") { 
-                $options{$a}{'type'} = 'menu';
-                $options{$a}{'id'} = $subdivision->{'id'};
-                print "  [$a] " . $subdivision->{'label'} . "\n";
+                $options{$i}{'type'} = 'menu';
+                $options{$i}{'id'} = $subdivision->{'id'};
+                print "  [$i] " . $subdivision->{'label'} . "\n";
             }
             else {
-                $options{$a}{'type'} = 'menu';
-                $options{$a}{'id'} = $subdivision;
-                print "  [$a] $subdivision\n";
+                $options{$i}{'type'} = 'menu';
+                $options{$i}{'id'} = $subdivision;
+                print "  [$i] $subdivision\n";
             }
-            $a++;
+            $i++;
         }
     }
 
