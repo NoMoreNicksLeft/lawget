@@ -94,12 +94,28 @@ sub subdivisions {
         # Let's check to see if it's already in there.
         if (!grep {$_->{'label'} eq $municipality} @{$$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'}}) {
             push($$menu_config->{"us_${state}_subdivisions"}->{'subdivisions'}, {'label' => $municipality, 'id' => "us_${state}_" . lc($mid) });
-            $$menu_config->{"us_${state}_" . lc($mid)} = "";
+            $$menu_config->{"us_${state}_" . lc($mid)} = {'dynamic_materials' => 'LegalPublisher::FranklinLegal', 'origin' => $url};
         }
     }
 
     # Set the tripwire, so we can skip this if called again.
     $subdivisions_tripwire++;
+}
+
+sub materials {
+    my ($package, $municipality, $menu_config) = @_;
+
+    my $municipality_url = $$menu_config->{$municipality}->{'origin'};
+
+    # We need a robot.
+    my $mech = WWW::Mechanize->new();
+    $mech->get($municipality_url);
+
+    # Is there a charter?
+
+    # Ordinances?
+
+
 }
 
 ################################################################################
