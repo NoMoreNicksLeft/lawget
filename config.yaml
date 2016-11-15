@@ -23,3 +23,15 @@ legal publisher:
     origin: http://www.amlegal.com/code-library/
   municode:
     origin: https://www.municode.com/library/
+  conway green:
+    origin: http://www.conwaygreene.com/municipalCodes.htm
+  general code:
+    origin: x
+  code publishing:
+    origin: https://www.codebook.com/listing
+  sterling codifers:
+    origin: http://www.sterlingcodifiers.com/municipality.php
+  quality code:
+    origin: http://www.qcode.us/codes.htm
+  coded systems:
+    origin: http://www.codedsystems.com/codelibrary.html
