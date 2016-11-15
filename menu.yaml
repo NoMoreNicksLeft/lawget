@@ -5,14 +5,14 @@ World:
     - Europe
     - Africa
     - Pacific
-  s-heading:    Regions with available materials:
+  s-heading:    "Regions with available materials:"
   question:     Which region of the world would you like to browse?
 North America:
   subdivisions:
     - United States
     - Canada
     - Mexico
-  s-heading:    Countries with available materials:
+  s-heading:    "Countries with available materials:"
   question:     Which country of North America would you like to browse?
 United States:
   materials: 
@@ -47,8 +47,8 @@ Texas:
   subdivisions:
     - label:    Cities, counties, etc.
       id:       us_tx_subdivisions
-  m-heading:    The following materials are available for Texas:
-  s-heading:    Additionally, materials are available for variou Texas subdivisions (over 100):
+  m-heading:    "The following materials are available for Texas:"
+  s-heading:    "Additionally, materials are available for variou Texas subdivisions (over 100):"
   s-start:      9
   question:     Which option would you like to browse?
 us_tx_subdivisions:
