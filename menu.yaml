@@ -56,7 +56,6 @@ us_tx_subdivisions:
     - LegalPublisher::FranklinLegal
     # - LegalPublisher::Municode
     - LegalPublisher::AmericanLegal
-    # - LegalPublisher::ConwayGreene
     - LegalPublisher::SterlingCodifiers
   argument:     TX
   s-heading:    "Texas subdivisions, organized alphabetically:"
