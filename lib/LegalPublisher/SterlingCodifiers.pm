@@ -92,7 +92,7 @@ sub subdivisions {
         # Let's check to see if it's already in there.
         if (!grep {$_->{'label'} eq $municipality} @{$$menu_config->{"us_${filter}_subdivisions"}->{'subdivisions'}}) {
             push($$menu_config->{"us_${filter}_subdivisions"}->{'subdivisions'}, {'label' => $municipality, 'id' => "us_${filter}_" . lc($mid) });
-            $$menu_config->{"us_${filter}_" . lc($mid)} = "";
+            $$menu_config->{"us_${filter}_" . lc($mid)} = {'dynamic_materials' => 'LegalPublisher::SterlingCodifiers', 'origin' => $url};
         }
     }
 
@@ -100,6 +100,32 @@ sub subdivisions {
     $subdivisions_tripwire{$filter} = 1;
 }
 
+sub materials {
+    my ($package, $municipality, $menu_config) = @_;
+
+    my $municipality_url = $$menu_config->{$municipality}->{'origin'};
+
+    # We need the materials node to be an array.
+    $$menu_config->{'materials'} = [];
+
+    # We need a robot.
+    my $mech = WWW::Mechanize->new();
+    $mech->get($municipality_url);
+
+    # Now we need to hit the left sidepanel, which lists all the goodies.
+    $mech->follow_link(name => 'leftframe');
+    my $page = $mech->content();
+
+    # Is there a charter?
+    while($page =~ /a\.add\(\d+, \d+, '(.+?)',/g) {
+        print "zzz $1\n";
+    }
+
+    # Ordinances?
+
+    delete $$menu_config->{$municipality}->{'dynamic_materials'};
+
+}
 ################################################################################
 ################################################################################
 ################################################################################
