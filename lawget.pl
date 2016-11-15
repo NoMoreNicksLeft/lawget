@@ -136,7 +136,20 @@ sub menu {
 
     # We need to print the m-heading if it exists (might not early in the tree).
     print $menu->{'m-heading'} . "\n" if exists $menu->{'m-heading'};
-    # The materials menus...
+
+    # Sometimes we don't know what materials exist until we look them up.
+    if (exists $menu->{'dynamic_materials'}) {
+        my $module = $menu->{'dynamic_materials'};
+        # Load up the module that can check what materials are available
+        load $module;
+        $module->configure($app_config);
+        # Grab them
+        $module->materials($menu_name, \$menu_config);
+        # Now we need to nuke dynamic_materials from the menu object.
+
+    }
+
+    # The hard-coded materials menus...
     my $i = 1;
     foreach my $material (@{$menu->{'materials'}}) {
         if (ref($material) eq "HASH") {
