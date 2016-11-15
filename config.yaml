@@ -6,6 +6,25 @@ binpath:
     inkscape: /Applications/Inkscape.app/Contents/Resources/bin/inkscape
   win64:
     inkscape: ''
+legal publisher:
+  american legal:
+    origin: http://www.amlegal.com/code-library/
+  code publishing:
+    origin: https://www.codebook.com/listing
+  coded systems:
+    origin: http://www.codedsystems.com/codelibrary.html
+  conway green:
+    origin: http://www.conwaygreene.com/municipalCodes.htm
+  franklin legal:
+    origin: http://www.franklinlegal.net/search-codes
+  general code:
+    origin: x
+  municode:
+    origin: https://www.municode.com/library/
+  quality code:
+    origin: http://www.qcode.us/codes.htm
+  sterling codifers:
+    origin: http://www.sterlingcodifiers.com/municipality.php
 north america:
   us:
     supreme court:
@@ -16,22 +35,3 @@ north america:
       tac:
         origin: http://texreg.sos.state.tx.us/public/readtac$ext.viewtac
         title_size: ~
-legal publisher:
-  franklin legal:
-    origin: http://www.franklinlegal.net/search-codes
-  american legal:
-    origin: http://www.amlegal.com/code-library/
-  municode:
-    origin: https://www.municode.com/library/
-  conway green:
-    origin: http://www.conwaygreene.com/municipalCodes.htm
-  general code:
-    origin: x
-  code publishing:
-    origin: https://www.codebook.com/listing
-  sterling codifers:
-    origin: http://www.sterlingcodifiers.com/municipality.php
-  quality code:
-    origin: http://www.qcode.us/codes.htm
-  coded systems:
-    origin: http://www.codedsystems.com/codelibrary.html
