@@ -214,7 +214,7 @@ South Dakota:
   materials:
   subdivisions:
     - label:    Cities, counties, etc.
-      id:       us_ok_subdivisions
+      id:       us_sd_subdivisions
   m-heading:    "The following materials are available for South Dakota:"
   s-heading:    "Additionally, materials are available for various South Dakota subdivisions:"
   s-start:      9
