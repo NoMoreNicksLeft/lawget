@@ -58,6 +58,10 @@ sub configure {
     $config = $z;
 }
 
+sub you_are_here {
+    return ('north america', 'us', 'texas', 'tac');
+}
+
 sub menu {
 
     my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
