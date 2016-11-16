@@ -42,12 +42,15 @@ United States:
     - Montana
     - New Mexico
     - Nevada
+    - Ohio
     - Oklahoma
     - Oregon
+    - Pennsylvania
     - South Dakota
     - Texas
     - Utah
     - Washington
+    - West Virginia
     - Wisconsin
     - Wyoming
   m-heading:    "The following materials are available for United States:"
@@ -171,6 +174,15 @@ Nevada:
   s-heading:    "Additionally, materials are available for various Nevada subdivisions:"
   s-start:      9
   question:     Which option would you like to browse?
+Ohio:
+  materials:
+  subdivisions:
+    - label:    Cities, counties, etc.
+      id:       us_oh_subdivisions
+  m-heading:    "The following materials are available for Ohio:"
+  s-heading:    "Additionally, materials are available for various Ohio subdivisions:"
+  s-start:      9
+  question:     Which option would you like to browse?
 Oklahoma:
   materials:
   subdivisions:
@@ -187,6 +199,15 @@ Oregon:
       id:       us_or_subdivisions
   m-heading:    "The following materials are available for Oregon:"
   s-heading:    "Additionally, materials are available for various Oregon subdivisions:"
+  s-start:      9
+  question:     Which option would you like to browse?
+Pennsylvania:
+  materials:
+  subdivisions:
+    - label:    Cities, counties, etc.
+      id:       us_pa_subdivisions
+  m-heading:    "The following materials are available for Pennsylvania:"
+  s-heading:    "Additionally, materials are available for various Pennsylvania subdivisions:"
   s-start:      9
   question:     Which option would you like to browse?
 South Dakota:
@@ -229,6 +250,15 @@ Washington:
       id:       us_wa_subdivisions
   m-heading:    "The following materials are available for Washington:"
   s-heading:    "Additionally, materials are available for various Washington subdivisions:"
+  s-start:      9
+  question:     Which option would you like to browse?
+West Virginia:
+  materials:
+  subdivisions:
+    - label:    Cities, counties, etc.
+      id:       us_wv_subdivisions
+  m-heading:    "The following materials are available for West Virginia:"
+  s-heading:    "Additionally, materials are available for various West Virginia subdivisions:"
   s-start:      9
   question:     Which option would you like to browse?
 Wisconsin:
@@ -348,6 +378,12 @@ us_or_subdivisions:
   argument:     OR
   s-heading:    "Oregon subdivisions, organized alphabetically:"
   question:     What letter does the municipality or county start with?
+us_pa_subdivisions:
+  dynamic:
+    - LegalPublisher::ConwayGreene
+  argument:     PA
+  s-heading:    "Pennsylvania subdivisions, organized alphabetically:"
+  question:     What letter does the municipality or county start with?
 us_sd_subdivisions:
   dynamic:
     - LegalPublisher::SterlingCodifiers
@@ -374,6 +410,12 @@ us_wa_subdivisions:
     - LegalPublisher::SterlingCodifiers
   argument:     WA
   s-heading:    "Washington subdivisions, organized alphabetically:"
+  question:     What letter does the municipality or county start with?
+us_wv_subdivisions:
+  dynamic:
+    - LegalPublisher::ConwayGreene
+  argument:     WV
+  s-heading:    "West Virginia subdivisions, organized alphabetically:"
   question:     What letter does the municipality or county start with?
 us_wi_subdivisions:
   dynamic:
