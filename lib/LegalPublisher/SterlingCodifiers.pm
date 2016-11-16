@@ -108,9 +108,9 @@ sub materials {
     # We need the materials node to be an array.
     $$menu_config->{$municipality}->{'materials'} = [];
 
+    # We'll also need the m-heading.
     $$menu_config->{$municipality}->{'m-heading'} = "The following materials are available for " .
                                                     $$menu_config->{$municipality}->{'label'} . ":";
-
     # We need a robot.
     my $mech = WWW::Mechanize->new();
     $mech->get($municipality_url);
@@ -128,12 +128,18 @@ sub materials {
             if (!exists $$menu_config->{$municipality}->{'materials'}->[0]->{'label'} ||
                 $$menu_config->{$municipality}->{'materials'}->[0]->{'label'} ne 'Charter') {
                 unshift($$menu_config->{$municipality}->{'materials'}, {'label' => 'Charter', 'module' => $package});
-                #print Dumper($$menu_config);
             }
         }
-        # Whatever they call the code of ordinances, we'll standardize.
+        elsif ($part =~ /(town|city) code/i) {
+            # Whatever they call the code of ordinances, we'll standardize.
+            push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Municipal Code', 'module' => $package});
+        }
+        elsif ($part =~ /ordinances pending/i) {
+            # Also the potential for pending ordinance. 
+            push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Pending Ordinances', 'module' => $package});
+        }
 
-        # Also the potential for pending ordinance. 
+        
     }
 
     # Ordinances?
