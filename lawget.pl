@@ -145,7 +145,7 @@ sub menu {
         # Now we need to nuke dynamic_materials from the menu object.
 
     }
-    
+
     # We need to print the m-heading if it exists (might not early in the tree).
     print $menu->{'m-heading'} . "\n" if exists $menu->{'m-heading'};
 
@@ -173,7 +173,7 @@ sub menu {
 
     # If there are more than n subdivisions, we'll want to make this a little
     # easier to browse.
-    if (scalar @{$menu->{'subdivisions'}} > 55 && !$start_letter) {
+    if (exists $menu->{'subdivisions'} && scalar @{$menu->{'subdivisions'}} > 55 && !$start_letter) {
         #print "the length is ", scalar @{$menu->{'subdivisions'}}, "\n";
         my @alphabet;
         foreach my $label (@{$menu->{'subdivisions'}}) {
@@ -193,7 +193,7 @@ sub menu {
             $i++;
         }
     }
-    elsif (scalar @{$menu->{'subdivisions'}} > 55 && $start_letter) {
+    elsif (exists $menu->{'subdivisions'} && scalar @{$menu->{'subdivisions'}} > 55 && $start_letter) {
         # The subdivision menus...
         $i = 10;
         my @slice = grep { substr($_->{'label'}, 0, 1) eq $start_letter } @{$menu->{'subdivisions'}};
@@ -214,7 +214,7 @@ sub menu {
             $i++;
         }
     }
-    else {
+    elsif (exists $menu->{'subdivisions'}) {
         # The subdivision menus...
         $i = $menu->{'s-start'} if exists $menu->{'s-start'};
         foreach my $subdivision (@{$menu->{'subdivisions'}}) {
