@@ -134,9 +134,6 @@ sub menu {
     # Let's do a newline. Just because.
     print "\n";
 
-    # We need to print the m-heading if it exists (might not early in the tree).
-    print $menu->{'m-heading'} . "\n" if exists $menu->{'m-heading'};
-
     # Sometimes we don't know what materials exist until we look them up.
     if (exists $menu->{'dynamic_materials'}) {
         my $module = $menu->{'dynamic_materials'};
@@ -148,6 +145,9 @@ sub menu {
         # Now we need to nuke dynamic_materials from the menu object.
 
     }
+    
+    # We need to print the m-heading if it exists (might not early in the tree).
+    print $menu->{'m-heading'} . "\n" if exists $menu->{'m-heading'};
 
     # The hard-coded materials menus...
     my $i = 1;

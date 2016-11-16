@@ -92,7 +92,7 @@ sub subdivisions {
         # Let's check to see if it's already in there.
         if (!grep {$_->{'label'} eq $municipality} @{$$menu_config->{"us_${filter}_subdivisions"}->{'subdivisions'}}) {
             push($$menu_config->{"us_${filter}_subdivisions"}->{'subdivisions'}, {'label' => $municipality, 'id' => "us_${filter}_" . lc($mid) });
-            $$menu_config->{"us_${filter}_" . lc($mid)} = {'dynamic_materials' => 'LegalPublisher::SterlingCodifiers', 'origin' => $url};
+            $$menu_config->{"us_${filter}_" . lc($mid)} = {'dynamic_materials' => 'LegalPublisher::SterlingCodifiers', 'origin' => $url, 'label' => "$municipality, ".uc($filter)};
         }
     }
 
@@ -106,7 +106,10 @@ sub materials {
     my $municipality_url = $$menu_config->{$municipality}->{'origin'};
 
     # We need the materials node to be an array.
-    $$menu_config->{'materials'} = [];
+    $$menu_config->{$municipality}->{'materials'} = [];
+
+    $$menu_config->{$municipality}->{'m-heading'} = "The following materials are available for " .
+                                                    $$menu_config->{$municipality}->{'label'} . ":";
 
     # We need a robot.
     my $mech = WWW::Mechanize->new();
@@ -116,9 +119,21 @@ sub materials {
     $mech->follow_link(name => 'leftframe');
     my $page = $mech->content();
 
-    # Is there a charter?
+    # Loop through and try to find evidence of: charter, code of ordinances, other code
     while($page =~ /a\.add\(\d+, \d+, '(.+?)',/g) {
-        print "zzz $1\n";
+        my $part = $1;
+        # The string "charter" is enough to convince me that's available for download.
+        if ($part =~ /charter/i) {
+            # If it shows up twice, we don't want to include it twice.
+            if (!exists $$menu_config->{$municipality}->{'materials'}->[0]->{'label'} ||
+                $$menu_config->{$municipality}->{'materials'}->[0]->{'label'} ne 'Charter') {
+                unshift($$menu_config->{$municipality}->{'materials'}, {'label' => 'Charter', 'module' => $package});
+                #print Dumper($$menu_config);
+            }
+        }
+        # Whatever they call the code of ordinances, we'll standardize.
+
+        # Also the potential for pending ordinance. 
     }
 
     # Ordinances?
