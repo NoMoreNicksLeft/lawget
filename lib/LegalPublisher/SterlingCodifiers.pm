@@ -108,9 +108,11 @@ sub materials {
     # We need the materials node to be an array.
     $$menu_config->{$municipality}->{'materials'} = [];
 
-    # We'll also need the m-heading.
+    # We'll also need the m-heading, question
     $$menu_config->{$municipality}->{'m-heading'} = "The following materials are available for " .
                                                     $$menu_config->{$municipality}->{'label'} . ":";
+    $$menu_config->{$municipality}->{'question'} = "Which option would you like to browse?";
+
     # We need a robot.
     my $mech = WWW::Mechanize->new();
     $mech->get($municipality_url);
@@ -120,6 +122,7 @@ sub materials {
     my $page = $mech->content();
 
     # Loop through and try to find evidence of: charter, code of ordinances, other code
+    my %parts_already_there;
     while($page =~ /a\.add\(\d+, \d+, '(.+?)',/g) {
         my $part = $1;
         # The string "charter" is enough to convince me that's available for download.
@@ -130,11 +133,13 @@ sub materials {
                 unshift($$menu_config->{$municipality}->{'materials'}, {'label' => 'Charter', 'module' => $package});
             }
         }
-        elsif ($part =~ /(town|city) code/i) {
+        elsif ($part =~ /(town|city) code/i && !exists $parts_already_there{'code'}) {
+            $parts_already_there{'code'} = 1;
             # Whatever they call the code of ordinances, we'll standardize.
             push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Municipal Code', 'module' => $package});
         }
-        elsif ($part =~ /ordinances pending/i) {
+        elsif ($part =~ /ordinances pending/i && !exists $parts_already_there{'pending'}) {
+            $parts_already_there{'pending'} = 1;
             # Also the potential for pending ordinance. 
             push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Pending Ordinances', 'module' => $package});
         }
