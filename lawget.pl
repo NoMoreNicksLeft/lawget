@@ -49,7 +49,7 @@ my $banner = "You can download statutory code, administrative code, law reporter
 print wrap('', '', $banner);
 
 # Sending them into the endless polling loop!
-while (my ($module, $test) = menu('United States')) {
+while (my ($module, $government_id, $material_id) = menu('United States')) {
     # Load up the module. Should only load once, even if called many times.
     load $module;
     # Configure is running every time, not sure if that's bad or not.
