@@ -95,7 +95,7 @@ while (my ($module, $government_id, $material_id) = menu('United States')) {
     my @ready_files;
     if    ($format ne 'original') {
         # Will need to be compiled to html, regardless of format.
-        (@compiled) = $module->download(@materials);
+        (@compiled) = $module->download($destination, $rename, @materials);
         if    ($format eq 'html') {
             # The ready files is an identical list to @compiled.
             @ready_files = @compiled;
