@@ -59,6 +59,7 @@ while (my ($module, $test) = menu('United States')) {
     my ($format, @materials) = $module->menu();
     
     # Want to rename/move these files? Ask before starting long process.
+    #ask_destination($module, $government_id, something?);
     my $default_destination = DiveRef($app_config, ($module->you_are_here, 'default_destination')) || "";
     print "\nWhere should the materials be saved? [$$default_destination] ";
     my $destination;
@@ -247,6 +248,46 @@ sub menu {
     elsif (exists $options{$selection}->{'id'})      { menu($options{$selection}->{'id'}); }
     elsif (exists $options{$selection}->{'name'})    { return $options{$selection}->{'name'}; }
     else { ; }
+
+}
+
+sub ask_destination {
+    my ($module) = @_;
+
+    # Using the module's "you are here", we'll look up the default, if there is one.
+    my $default_destination = DiveRef($app_config, ($module->you_are_here, 'default_destination')) || "";
+
+    print "\nWhere should the materials be saved? [$$default_destination] ";
+
+    # Prompt the user for an answer.
+    my ($destination, $mkdir_err);
+    do { 
+        chomp($destination = <>);
+        $destination ||= $$default_destination;
+        File::Path::make_path($destination, {error => \$mkdir_err} );
+        if (@$mkdir_err) { print "ERROR:   That destination directory can't be created, please try again: "; }
+    } until(!@$mkdir_err);
+
+    return 0; # Maybe have this return the hash reference, we'll need it in the main code.
+}
+
+sub ask_rename {
+    my ($menu_name, $start_letter) = @_;
+
+    # Using the module's "you are here", we'll look up the default, if there is one.
+    my $default_rename = DiveRef($app_config, ($module->you_are_here, 'default_rename')) || "";
+
+    print "\nDo you want to rename the materials? [$$default_rename] ";
+
+    my ($rename);
+    chomp($rename = <>);
+    $rename ||= $$default_rename;
+    $fn = eval "sprintf($rename)";
+    # Is there any way to check that their sprintf expression is good? If we wait, we can't warn,
+    # will just have to fail out.
+}
+
+sub ask_language {
 
 }
 
