@@ -55,8 +55,9 @@ while (my ($module, $test) = menu('United States')) {
     # Configure is running every time, not sure if that's bad or not.
     $module->configure($app_config);
 
-    # We need to call the module's menu() method, and generate a menu from it.
-    # Should return parameters to run download() and compile() with.
+    # A menu() should return an array of the materials id, the format, and optionally an id and a "type". Some modules
+    # handle many different governments (legal publishers modules, for municipal codes), but even downloading different 
+    # sets of materials (codes of ordinances, zoning codes, special programs, charters).
     my ($format, @materials) = $module->menu();
     
     # Want to rename/move these files? Ask before starting long process.
@@ -144,8 +145,6 @@ sub menu {
         $module->configure($app_config);
         # Grab them
         $module->materials($menu_name, \$menu_config);
-        # Now we need to nuke dynamic_materials from the menu object.
-
     }
 
     # We need to print the m-heading if it exists (might not early in the tree).
@@ -173,8 +172,7 @@ sub menu {
         $module->subdivisions($module_argument, \$menu_config);
     }
 
-    # If there are more than n subdivisions, we'll want to make this a little
-    # easier to browse.
+    # If there are more than n subdivisions, we'll want to make this a little easier to browse.
     if (exists $menu->{'subdivisions'} && scalar @{$menu->{'subdivisions'}} > 55 && !$start_letter) {
         #print "the length is ", scalar @{$menu->{'subdivisions'}}, "\n";
         my @alphabet;
