@@ -9,6 +9,7 @@ use File::Copy;
 use Config::JSON;
 use YAML qw'LoadFile DumpFile';
 use Getopt::Long;
+use Term::ReadLine;
 use Text::Wrap;
 use Term::ReadKey;
 use Module::Load;
