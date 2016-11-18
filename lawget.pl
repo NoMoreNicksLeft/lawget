@@ -87,8 +87,7 @@ while (my ($module, $government_id, $material_id) = menu('United States')) {
     # Let's write out the configs with new defaults.
     DumpFile("config.yaml", $app_config);
 
-    # Some materials only download junk files, that are virtually useless
-    # until compiled. Others are usable as is.
+    # Some materials only download junk files, that are virtually useless until compiled. Others are usable as is.
     my (@downloaded) = $module->download($destination, $rename, @materials);
 
     # Depending on the format desired, may need to do some work.
