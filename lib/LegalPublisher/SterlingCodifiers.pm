@@ -60,6 +60,10 @@ sub configure {
     $config = $z;
 }
 
+sub languages {
+    return(['eng']);
+}
+
 sub subdivisions {
     my ($package, $filter, $menu_config) = @_;
 

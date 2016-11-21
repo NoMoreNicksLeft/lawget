@@ -286,7 +286,19 @@ sub ask_rename {
 }
 
 sub ask_language {
+    my ($module) = @_;
 
+    my @languages = $module->languages;
+
+    if (scalar @languages > 1) {
+        print "\nThis material is available in multiple languages: ", join(" ", @languages), "\n";
+        print "Which do you want to download? []";
+        my $chosen_languages;
+        while(1) {
+            chomp($chosen_languages = <>);
+        }
+
+    }
 }
 
 ################################################################################
