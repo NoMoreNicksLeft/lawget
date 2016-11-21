@@ -61,7 +61,8 @@ sub configure {
 }
 
 sub languages {
-    return(['eng']);
+    return('eng');
+}
 }
 
 sub subdivisions {

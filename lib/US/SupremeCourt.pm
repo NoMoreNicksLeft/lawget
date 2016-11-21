@@ -44,6 +44,10 @@ sub configure {
     $config = $z;
 }
 
+sub languages {
+    return(['eng']);
+}
+
 sub you_are_here {
     return ('north america', 'us', 'supreme court');
 }

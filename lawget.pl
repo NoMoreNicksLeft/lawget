@@ -290,14 +290,41 @@ sub ask_language {
 
     my @languages = $module->languages;
 
+    my @final_languages;
+
+    # If there's only one language, no need to ask.
     if (scalar @languages > 1) {
         print "\nThis material is available in multiple languages: ", join(" ", @languages), "\n";
-        print "Which do you want to download? []";
-        my $chosen_languages;
-        while(1) {
+        
+        # We'll keep asking until we get a sensible answer.
+        LANGUAGES_LOOP: while(1) {
+            print "Which do you want to download? [all]";
+            my $chosen_languages;
             chomp($chosen_languages = <>);
-        }
+            $chosen_languages ||= 'all';
 
+            my @answer = split(/(,| )/, $chosen_languages);
+            foreach my $answerpart (@answer) {
+                if ($answerpart ~~ @languages) {
+                    push(@final_languages, $answerpart);
+                }
+                elsif ($answerpart eq 'all') {
+                    @final_languages = @languages;
+                    last;
+                }
+                elsif ($answerpart =~ m/^(q|quit|exit)$/) {
+                    exit;
+                }
+                else {
+                    print "ERROR:   That option ($answerpart) is unavailable.\n";
+                    undef(@final_languages);
+                    next LANGUAGES_LOOP;
+                }
+            }
+            # If we got through the forloop, then all the answers are good, we can kill this.
+            last;
+        }
+        return(@final_languages);
     }
 }
 
