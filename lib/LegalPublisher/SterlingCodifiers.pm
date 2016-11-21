@@ -151,11 +151,47 @@ sub materials {
         
     }
 
-    # Ordinances?
-
     delete $$menu_config->{$municipality}->{'dynamic_materials'};
 
 }
+
+
+sub menu {
+    #my $scotus_url = $config->{'north america'}->{'us'}->{'supreme court'}->{'origin'};
+
+    # The user might return to this menu 3 or 4 times, no need to hammer it
+    # every time. 
+    if (exists ($menu_list{'empty'}) && $menu_list{'empty'} eq 'true') {
+        # We'll grab the TAC page, regex out the urls we need, and return those.
+        my $mech = WWW::Mechanize->new();
+        $mech->get($scotus_url);
+
+        # We're going to loop through the (title) links on the page.
+        my $page = $mech->content();
+        while ($page =~ /href="boundvolumes\/(\d{3})bv.pdf.+?>(Volume \d{3})&nbsp;/sg) {
+            $menu_list{$1} = Lingua::EN::Titlecase->new($2);
+        }
+        delete $menu_list{'empty'};
+    }
+
+    print "\n"; 
+    print wrap('', '', "The United States Reports comprises multiple titles. ");
+    print "\n"; 
+    print wrap('', '', "You may answer with 'all', a comma-separated list of numbers, a range (1-9), or both:\n");          
+
+    # Let's look up the widest key to make this look pretty.
+    my $option_width = 0;
+    foreach my $key (keys %menu_list) { 
+        if (length($key) > $option_width) { $option_width = length($key); } 
+    }
+
+    foreach my $option (sort {$a <=> $b} keys %menu_list) {
+        print "  [$option] " . (" " x ($option_width - length($option))) . $menu_list{$option} . "\n";
+    }
+
+
+}
+
 ################################################################################
 ################################################################################
 ################################################################################
