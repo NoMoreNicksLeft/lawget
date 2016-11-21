@@ -49,40 +49,23 @@ my $banner = "You can download statutory code, administrative code, law reporter
 print wrap('', '', $banner);
 
 # Sending them into the endless polling loop!
-while (my ($module, $government_id, $material_id) = menu('United States')) {
+while (my ($module, $government_id, $material_type) = menu('United States')) {
     # Load up the module. Should only load once, even if called many times.
     load $module;
     # Configure is running every time, not sure if that's bad or not.
     $module->configure($app_config);
 
-    # A menu() should return an array of the materials id, the format, and optionally an id and a "type". Some modules
-    # handle many different governments (legal publishers modules, for municipal codes), but even downloading different 
-    # sets of materials (codes of ordinances, zoning codes, special programs, charters).
-    my ($format, @materials) = $module->menu();
+    # A package menu() should return an array of the materials id, the format, and optionally an id and a "type". Some 
+    # modules handle many different governments (legal publishers modules, for municipal codes), and even downloading 
+    # different sets of materials (codes of ordinances, zoning codes, special programs, charters).
+    my ($format, @materials) = $module->menu($government_id, $material_type);
     
-    # Want to rename/move these files? Ask before starting long process.
-    #ask_destination($module, $government_id, something?);
-    my $default_destination = DiveRef($app_config, ($module->you_are_here, 'default_destination')) || "";
-    print "\nWhere should the materials be saved? [$$default_destination] ";
-    my $destination;
-    chomp($destination = <>);
-    $destination ||= $$default_destination;
-    File::Path::make_path($destination);
-    # Check here that it can actually be created, if not, ask again.
-
-    # Make this the new default.
-    $$default_destination = $destination;
-
-    my $default_rename = DiveRef($app_config, ($module->you_are_here, 'default_rename')) || "";
-    print "\nDo you want to rename the materials? [$$default_rename] ";
-    my $rename;
-    chomp($rename = <>);
-    $rename ||= $$default_rename;
-    # Is there any way to check that their sprintf expression is good? If we wait, we can't warn,
-    # will just have to fail out.
-
-    # Make this the new default.
-    $$default_rename = $rename;
+    # And where would they like those files downloaded to?
+    my $destination = ask_destination($module, $government_id, $material_type);
+    # How would they like the files renamed?
+    my $rename = ask_rename($module, $government_id, $material_type);
+    # What languages do they want this in? If empty, there's only one anyway.
+    my @languages = ask_language($module);
 
     # Let's write out the configs with new defaults.
     DumpFile("config.yaml", $app_config);
@@ -155,6 +138,8 @@ sub menu {
         if (ref($material) eq "HASH") {
             $options{$i}{'type'} = 'module';
             $options{$i}{'name'} = $material->{'module'};
+            $options{$i}{'government'} = $material->{'government'};
+            $options{$i}{'government'} = $material->{'government'};
             print "  [$i] " . $material->{'label'} . "\n"; 
         }
         $i++;
@@ -244,16 +229,24 @@ sub menu {
     elsif ($selection =~ m/^\s*(top|start)\s*$/)     { menu("World"); }
     elsif ($options{$selection}{'type'} eq 'letter') { menu($menu_name, $options{$selection}->{'id'}); }
     elsif (exists $options{$selection}->{'id'})      { menu($options{$selection}->{'id'}); }
-    elsif (exists $options{$selection}->{'name'})    { return $options{$selection}->{'name'}; }
+    elsif (exists $options{$selection}->{'name'})    { 
+        return ($options{$selection}->{'name'}, $options{$selection}->{'government'}); 
+    }
     else { ; }
 
 }
 
 sub ask_destination {
-    my ($module) = @_;
+    my ($module, $government_id, $material_type) = @_;
+
+    # If this is for a local government, we can't get the "you_are_here" from module alone.
+    my @you_are_here = $module->you_are_here;
+    if ($government_id) {
+         push(@you_are_here, split(/_/, $government_id), $material_type);
+    }
 
     # Using the module's "you are here", we'll look up the default, if there is one.
-    my $default_destination = DiveRef($app_config, ($module->you_are_here, 'default_destination')) || "";
+    my $default_destination = DiveRef($app_config, (@you_are_here, 'default_destination')) || "";
 
     print "\nWhere should the materials be saved? [$$default_destination] ";
 
@@ -266,23 +259,37 @@ sub ask_destination {
         if (@$mkdir_err) { print "ERROR:   That destination directory can't be created, please try again: "; }
     } until(!@$mkdir_err);
 
-    return 0; # Maybe have this return the hash reference, we'll need it in the main code.
+    # Set this as the new default.
+    $$default_destination = $destination;
+
+    return($destination);
 }
 
 sub ask_rename {
-    my ($menu_name, $start_letter) = @_;
+    my ($module, $government_id, $material_type) = @_;
+
+    # If this is for a local government, we can't get the "you_are_here" from module alone.
+    my @you_are_here = $module->you_are_here;
+    if ($government_id) {
+         push(@you_are_here, split(/_/, $government_id), $material_type);
+    }
 
     # Using the module's "you are here", we'll look up the default, if there is one.
-    my $default_rename = DiveRef($app_config, ($module->you_are_here, 'default_rename')) || "";
+    my $default_rename = DiveRef($app_config, (@you_are_here, 'default_rename')) || "";
 
     print "\nDo you want to rename the materials? [$$default_rename] ";
 
     my ($rename);
     chomp($rename = <>);
     $rename ||= $$default_rename;
-    $fn = eval "sprintf($rename)";
+    my $fn = eval "sprintf($rename)";
     # Is there any way to check that their sprintf expression is good? If we wait, we can't warn,
     # will just have to fail out.
+
+    # Make this the new default.
+    $$default_rename = $rename;
+
+    return($rename);
 }
 
 sub ask_language {
