@@ -59,12 +59,12 @@ sub configure {
 }
 
 sub you_are_here {
-    return ('north america', 'us', 'texas', 'tac');
+    return ('north america', 'us', 'tx', 'tac');
 }
 
 sub menu {
 
-    my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
+    my $tac_url = $config->{'north america'}->{'us'}->{'tx'}->{'tac'}->{'origin'};
 
     # The user might return to this menu 3 or 4 times, no need to hammer it
     # every time. 
@@ -158,7 +158,7 @@ sub download {
     # We have a few arguments for this.
     my ($package, @titles) = @_;
 
-    my $tac_url = $config->{'north america'}->{'us'}->{'texas'}->{'tac'}->{'origin'};
+    my $tac_url = $config->{'north america'}->{'us'}->{'tx'}->{'tac'}->{'origin'};
 
     my $title_data = get_title_urls($tac_url, @titles);
 
