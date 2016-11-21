@@ -63,6 +63,9 @@ sub configure {
 sub languages {
     return('eng');
 }
+
+sub you_are_here {
+    return ('north america');
 }
 
 sub subdivisions {
@@ -87,7 +90,7 @@ sub subdivisions {
         my ($url, $municipality) = ($1, $2);
 
         $municipality = Lingua::EN::Titlecase->new($municipality)->title;
-        my $mid = $municipality; $mid =~ s/[ -'()]/_/g;
+        my $mid = $municipality; $mid =~ s/[ -'()]//g;
 
         # If the subdivs key doesn't exist yet, it will bitch that "not an array reference",
         # so we'll make it an empty array.
@@ -135,18 +138,28 @@ sub materials {
             # If it shows up twice, we don't want to include it twice.
             if (!exists $$menu_config->{$municipality}->{'materials'}->[0]->{'label'} ||
                 $$menu_config->{$municipality}->{'materials'}->[0]->{'label'} ne 'Charter') {
-                unshift($$menu_config->{$municipality}->{'materials'}, {'label' => 'Charter', 'module' => $package});
+
+                unshift($$menu_config->{$municipality}->{'materials'}, {'label' => 'Charter', 
+                                                                        'module' => $package,
+                                                                        'government' => $municipality,
+                                                                        'type' => 'charter' });
             }
         }
         elsif ($part =~ /(town|city) code/i && !exists $parts_already_there{'code'}) {
             $parts_already_there{'code'} = 1;
             # Whatever they call the code of ordinances, we'll standardize.
-            push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Municipal Code', 'module' => $package});
+            push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Municipal Code', 
+                                                                 'module' => $package,
+                                                                 'government' => $municipality,
+                                                                 'type' => 'code' });
         }
         elsif ($part =~ /ordinances pending/i && !exists $parts_already_there{'pending'}) {
             $parts_already_there{'pending'} = 1;
             # Also the potential for pending ordinance. 
-            push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Pending Ordinances', 'module' => $package});
+            push($$menu_config->{$municipality}->{'materials'}, {'label' => 'Pending Ordinances', 
+                                                                 'module' => $package, 
+                                                                 'government' => $municipality,
+                                                                 'type' => 'pending' });
         }
 
         
@@ -165,7 +178,7 @@ sub menu {
     if (exists ($menu_list{'empty'}) && $menu_list{'empty'} eq 'true') {
         # We'll grab the TAC page, regex out the urls we need, and return those.
         my $mech = WWW::Mechanize->new();
-        $mech->get($scotus_url);
+        #$mech->get($scotus_url);
 
         # We're going to loop through the (title) links on the page.
         my $page = $mech->content();
